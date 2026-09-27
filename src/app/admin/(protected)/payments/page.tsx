@@ -3,7 +3,7 @@ import { PaymentRowActions } from "./PaymentRowActions";
 
 export default async function AdminPaymentsPage() {
   const supabase = createAdminClient();
-  const { data: payments } = await supabase
+  const { data: payments, error } = await supabase
     .from("payments")
     .select("*, profiles(full_name, username)")
     .order("created_at", { ascending: false });
@@ -11,6 +11,11 @@ export default async function AdminPaymentsPage() {
   return (
     <div>
       <h1 style={{ fontSize: 20, marginBottom: 20 }}>Payment Approvals</h1>
+      {error && (
+        <pre style={{ background: "#fee", color: "#900", padding: 12, marginBottom: 16, whiteSpace: "pre-wrap" }}>
+          DEBUG ERROR: {JSON.stringify(error, null, 2)}
+        </pre>
+      )}
       <div className="card">
         <table>
           <thead>
