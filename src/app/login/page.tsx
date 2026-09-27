@@ -34,8 +34,12 @@ export default function LoginPage() {
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (signInError) {
-      await supabase.rpc("increment_failed_login", { p_username: identifier });
       setLoading(false);
+      if (signInError.message.toLowerCase().includes("email not confirmed")) {
+        setError("Please confirm your email first — check your inbox (and spam folder) for the confirmation link.");
+        return;
+      }
+      await supabase.rpc("increment_failed_login", { p_username: identifier });
       setError("Invalid username/email or password.");
       return;
     }
