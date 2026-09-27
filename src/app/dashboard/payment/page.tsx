@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -11,6 +11,14 @@ const RAZORPAY_LINKS: Record<string, string> = {
 };
 
 export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="wrap"><p className="muted">Loading…</p></div>}>
+      <PaymentPageInner />
+    </Suspense>
+  );
+}
+
+function PaymentPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();

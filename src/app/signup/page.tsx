@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -8,6 +8,14 @@ import { createClient } from "@/lib/supabase/client";
 const MARKETS = ["Crypto Futures", "Forex", "Indian F&O", "MCX"];
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="wrap"><p className="muted">Loading…</p></div>}>
+      <SignupPageInner />
+    </Suspense>
+  );
+}
+
+function SignupPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
