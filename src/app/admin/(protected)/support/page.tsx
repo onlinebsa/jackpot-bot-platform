@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function AdminSupportPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: tickets } = await supabase
     .from("support_tickets")
     .select("*, profiles(full_name, username)")

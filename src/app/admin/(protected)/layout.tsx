@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { LogoutButton } from "@/components/LogoutButton";
+import { isAdminLoggedIn } from "@/lib/adminAuth";
+import { AdminLogoutButton } from "./AdminLogoutButton";
 
 const NAV = [
   { href: "/admin/customers", label: "Customers" },
@@ -14,12 +14,8 @@ const NAV = [
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase.from("profiles").select("role, full_name").eq("id", user.id).single();
-  if (profile?.role !== "admin") redirect("/dashboard");
+  const loggedIn = await isAdminLoggedIn();
+  if (!loggedIn) redirect("/admin/login");
 
   return (
     <div className="admin-shell">
@@ -35,8 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </nav>
         </div>
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: 14 }}>
-          <div className="muted" style={{ fontSize: 12, marginBottom: 8 }}>{profile?.full_name}</div>
-          <LogoutButton />
+          <AdminLogoutButton />
         </div>
       </div>
       <div className="admin-main">{children}</div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { BroadcastList } from "./BroadcastList";
 
 const SEGMENTS = [
@@ -13,7 +13,7 @@ const SEGMENTS = [
 export default async function BroadcastPage({ searchParams }: { searchParams: Promise<{ segment?: string }> }) {
   const { segment: segmentParam } = await searchParams;
   const segment = segmentParam || "all";
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   let query = supabase.from("profiles").select("id, full_name, whatsapp_number").eq("role", "customer");
 

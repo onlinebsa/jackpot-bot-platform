@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { updateSettings } from "./actions";
 
 const DAY_OPTIONS = [1, 3, 5, 7];
 
 export default async function AdminSettingsPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: settings } = await supabase.from("admin_settings").select("*").eq("id", 1).single();
   const activeDays: number[] = settings?.reminder_days ?? [1, 3, 5, 7];
 

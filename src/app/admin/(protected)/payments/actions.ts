@@ -1,19 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated");
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") throw new Error("Not authorized");
-  return { supabase, adminId: user.id };
-}
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdminSession } from "@/lib/adminAuth";
 
 export async function approvePayment(paymentId: string) {
-  const { supabase, adminId } = await requireAdmin();
+  await requireAdminSession();
+  const supabase = createAdminClient();
 
   const { data: payment, error: fetchError } = await supabase
     .from("payments").select("*").eq("id", paymentId).single();
@@ -38,7 +31,7 @@ export async function approvePayment(paymentId: string) {
 
   const { error: paymentError } = await supabase
     .from("payments")
-    .update({ status: "approved", approved_at: new Date().toISOString(), approved_by: adminId })
+    .update({ status: "approved", approved_at: new Date().toISOString() })
     .eq("id", paymentId);
   if (paymentError) throw new Error(paymentError.message);
 
@@ -47,14 +40,16 @@ export async function approvePayment(paymentId: string) {
 }
 
 export async function rejectPayment(paymentId: string) {
-  const { supabase } = await requireAdmin();
+  await requireAdminSession();
+  const supabase = createAdminClient();
   const { error } = await supabase.from("payments").update({ status: "rejected" }).eq("id", paymentId);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/payments");
 }
 
 export async function getScreenshotUrl(path: string): Promise<string | null> {
-  const { supabase } = await requireAdmin();
+  await requireAdminSession();
+  const supabase = createAdminClient();
   const { data, error } = await supabase.storage.from("payment-screenshots").createSignedUrl(path, 300);
   if (error) return null;
   return data.signedUrl;

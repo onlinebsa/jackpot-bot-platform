@@ -1,12 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdminSession } from "@/lib/adminAuth";
 
 export async function createPromoCode(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated");
+  await requireAdminSession();
+  const supabase = createAdminClient();
 
   const code = String(formData.get("code")).trim().toUpperCase();
   const discount = Number(formData.get("discount"));

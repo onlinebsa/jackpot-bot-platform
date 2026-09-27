@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createPromoCode } from "./actions";
 
 export default async function PromoCodesPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: codes } = await supabase.from("promo_codes").select("*").order("created_at", { ascending: false });
 
   return (

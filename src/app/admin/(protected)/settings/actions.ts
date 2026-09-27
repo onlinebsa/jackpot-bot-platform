@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdminSession } from "@/lib/adminAuth";
 
 export async function updateSettings(formData: FormData) {
-  const supabase = await createClient();
+  await requireAdminSession();
+  const supabase = createAdminClient();
   const whatsapp_number = String(formData.get("whatsapp_number") || "").trim();
   const reminder_days = formData
     .getAll("reminder_days")

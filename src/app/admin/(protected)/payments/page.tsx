@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { PaymentRowActions } from "./PaymentRowActions";
 
 export default async function AdminPaymentsPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: payments } = await supabase
     .from("payments")
     .select("*, profiles(full_name, username)")

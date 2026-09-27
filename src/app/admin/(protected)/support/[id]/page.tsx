@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { TicketActions } from "./TicketActions";
 
 export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: ticket } = await supabase
     .from("support_tickets").select("*, profiles(full_name, whatsapp_number)").eq("id", id).single();
   const { data: replies } = await supabase

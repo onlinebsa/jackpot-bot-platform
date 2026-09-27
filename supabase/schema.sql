@@ -300,8 +300,10 @@ create policy "screenshot_read_own_or_admin" on storage.objects
   );
 
 -- ============================================================================
--- AFTER RUNNING THIS FILE:
--- 1. Sign up your first user normally through the app.
--- 2. Then run this once (replace the email) to make that user an admin:
---    update public.profiles set role = 'admin' where email = 'you@example.com';
+-- NOTE: The admin panel does NOT use the `role` column or `is_admin()` on this
+-- app anymore — admin login is handled separately via ADMIN_USERNAME /
+-- ADMIN_PASSWORD environment variables (see README.md, section 4). The
+-- `role`/`is_admin()` pieces above are kept only because they're still
+-- referenced by the RLS policies' "or public.is_admin()" clause; that clause
+-- is simply unused unless you assign role='admin' to a profile yourself.
 -- ============================================================================

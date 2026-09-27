@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CustomerActions } from "./CustomerActions";
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: c } = await supabase.from("profiles").select("*").eq("id", id).single();
   const { data: payments } = await supabase
     .from("payments").select("*").eq("user_id", id).order("created_at", { ascending: false });

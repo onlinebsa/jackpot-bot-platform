@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { RevenueChart } from "./RevenueChart";
 import { ReminderButton } from "./ReminderButton";
 
 export default async function SalesDashboardPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const [{ count: totalActive }, { count: onetimeCount }, { count: monthlyCount }, { data: approvedPayments }] =
     await Promise.all([

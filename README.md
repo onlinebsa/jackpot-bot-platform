@@ -60,16 +60,23 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## 4. Make yourself an admin
+## 4. Set up the Admin Panel login (completely separate from customer accounts)
 
-1. Sign up for a normal account through the app's `/signup` page (use your own email).
-2. In Supabase's **SQL Editor**, run:
-   ```sql
-   update public.profiles set role = 'admin' where email = 'you@example.com';
-   ```
-3. Log out and log back in — you'll be redirected to `/admin` instead of `/dashboard`.
+The admin panel has its **own login**, totally independent of Supabase Auth / customer
+accounts. Add these to your `.env.local` (and to Vercel's environment variables):
 
-Repeat step 2 for any other admin/staff accounts.
+```
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=choose-a-strong-password
+ADMIN_SESSION_SECRET=70714ab7789ca267987a0a1fade15d10251f86f339555da6553b03311bc09680
+```
+
+- `ADMIN_USERNAME` / `ADMIN_PASSWORD`: whatever you want to log into `/admin/login` with.
+- `ADMIN_SESSION_SECRET`: any long random string (the value above is a ready-to-use example —
+  generate your own at https://generate-secret.vercel.app/32 for real production use). This
+  marks a logged-in admin session internally; it's never shown to anyone.
+
+Go to `/admin/login` (not the customer `/login`) to sign in as admin.
 
 ## 5. Deploy
 
@@ -122,9 +129,12 @@ supabase/schema.sql          run once in Supabase SQL editor — tables, RLS, tr
 
 ## Notes / gotchas
 
-- **Admin route protection** happens in `src/app/admin/layout.tsx` — it checks the logged-in
-  user's `profiles.role` and redirects non-admins to `/dashboard`. There's no separate admin
-  login page; the same `/login` form routes admins to `/admin` and customers to `/dashboard`.
+- **Admin route protection** happens in `src/app/admin/(protected)/layout.tsx` — it checks a
+  secure httpOnly cookie set by `/admin/login` (see `src/lib/adminAuth.ts`). This is completely
+  separate from customer Supabase Auth accounts: admin credentials live only in the
+  `ADMIN_USERNAME` / `ADMIN_PASSWORD` environment variables. All admin data reads/writes use the
+  Supabase **service role** client (`src/lib/supabase/admin.ts`), bypassing RLS, since access is
+  already gated by the admin login — so there's no `profiles.role` admin flag to manage anymore.
 - **Password reset** uses Supabase's built-in email link flow (not a numeric OTP) — the
   customer clicks the emailed link, which lands on `/reset-password` to set a new password.
   If you specifically need a 6-digit OTP experience, Supabase also supports that; ask if you
