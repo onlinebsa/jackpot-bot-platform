@@ -5,7 +5,7 @@ export default async function AdminPaymentsPage() {
   const supabase = createAdminClient();
   const { data: payments, error } = await supabase
     .from("payments")
-    .select("*, profiles(full_name, username)")
+    .select("*, profiles!payments_user_id_fkey(full_name, username)")
     .order("created_at", { ascending: false });
 
   return (
