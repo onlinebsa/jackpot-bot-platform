@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function AdminCustomersPage() {
   const supabase = createAdminClient();
-  const { data: customers } = await supabase
+  const { data: customers, error } = await supabase
     .from("profiles")
     .select("id, full_name, username, plan, status, created_at")
     .eq("role", "customer")
@@ -12,6 +12,11 @@ export default async function AdminCustomersPage() {
   return (
     <div>
       <h1 style={{ fontSize: 20, marginBottom: 20 }}>Customers</h1>
+      {error && (
+        <pre style={{ background: "#fee", color: "#900", padding: 12, marginBottom: 16, whiteSpace: "pre-wrap" }}>
+          DEBUG ERROR: {JSON.stringify(error, null, 2)}
+        </pre>
+      )}
       <div className="card">
         <table>
           <thead>
