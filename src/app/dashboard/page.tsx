@@ -1,0 +1,70 @@
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { LogoutButton } from "@/components/LogoutButton";
+
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  const { data: payments } = await supabase
+    .from("payments")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  const status = profile?.status ?? "no_plan";
+
+  return (
+    <div className="wrap">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h1 style={{ fontSize: 20 }}>Hi, {profile?.full_name?.split(" ")[0] ?? "there"}</h1>
+        <LogoutButton />
+      </div>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 6 }}>Your plan</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <span className={`badge badge-${status}`}>{status.replace("_", " ")}</span>
+          {profile?.plan && <span className="muted">{profile.plan === "monthly" ? "Monthly" : "2-Year Plan"}</span>}
+        </div>
+        {profile?.plan_expiry && (
+          <div className="muted" style={{ fontSize: 13 }}>
+            Expires: {new Date(profile.plan_expiry).toLocaleDateString()}
+          </div>
+        )}
+        {status !== "active" && (
+          <Link href="/dashboard/payment" className="btn" style={{ display: "inline-block", marginTop: 14 }}>
+            {status === "no_plan" ? "Choose a plan" : "Renew now"}
+          </Link>
+        )}
+      </div>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>Payment history</div>
+        {!payments?.length && <p className="muted">No payments submitted yet.</p>}
+        {!!payments?.length && (
+          <table>
+            <thead><tr><th>Date</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              {payments.map((p) => (
+                <tr key={p.id}>
+                  <td>{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td>{p.plan}</td>
+                  <td>₹{p.amount}</td>
+                  <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <Link href="/dashboard/support" className="btn-secondary" style={{ display: "inline-block" }}>
+        Support
+      </Link>
+    </div>
+  );
+}
