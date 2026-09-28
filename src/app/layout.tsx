@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "ApexSignal — Jackpot Bot",
+  title: "Jackpot Bot",
   description: "Subscription platform for the Jackpot Bot TradingView indicator",
 };
 

@@ -20,7 +20,7 @@ export function CustomerActions({ userId, whatsapp }: { userId: string; whatsapp
   }
 
   const waLink = `https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-    "Hi! This is ApexSignal support regarding your Jackpot Bot account."
+    "Hi! This is Jackpot Bot support regarding your account."
   )}`;
 
   return (

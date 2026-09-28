@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="wrap-wide">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
-        <h1 style={{ fontSize: 22 }}>ApexSignal — Jackpot Bot</h1>
+        <h1 style={{ fontSize: 22 }}>Jackpot Bot</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <Link href="/login" className="btn-secondary">Login</Link>
           <Link href="/signup" className="btn">Sign up</Link>

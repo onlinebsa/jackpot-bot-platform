@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="admin-side">
         <div>
           <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, marginBottom: 20 }}>
-            ApexSignal Admin
+            Jackpot Bot Admin
           </div>
           <nav className="admin-nav">
             {NAV.map((item) => (
