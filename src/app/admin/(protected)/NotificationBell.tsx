@@ -17,7 +17,9 @@ type NotificationItem = {
 export function NotificationBell() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   async function load() {
     try {
@@ -34,11 +36,23 @@ export function NotificationBell() {
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  function toggleOpen() {
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const panelWidth = 320;
+      let left = rect.right - panelWidth;
+      if (left < 8) left = 8;
+      if (left + panelWidth > window.innerWidth - 8) left = window.innerWidth - panelWidth - 8;
+      setPos({ top: rect.bottom + 8, left });
+    }
+    setOpen((o) => !o);
+  }
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
@@ -60,9 +74,10 @@ export function NotificationBell() {
   }
 
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div ref={wrapRef} style={{ position: "relative" }}>
       <button
-        onClick={() => setOpen((o) => !o)}
+        ref={buttonRef}
+        onClick={toggleOpen}
         style={{
           position: "relative",
           background: "none",
@@ -99,17 +114,17 @@ export function NotificationBell() {
       {open && (
         <div
           style={{
-            position: "absolute",
-            top: "calc(100% + 8px)",
-            right: 0,
+            position: "fixed",
+            top: pos.top,
+            left: pos.left,
             width: 320,
             maxHeight: 400,
             overflowY: "auto",
             background: "#16181d",
             border: "1px solid var(--border)",
             borderRadius: 10,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            zIndex: 100,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+            zIndex: 1000,
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderBottom: "1px solid var(--border)" }}>
