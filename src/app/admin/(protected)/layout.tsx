@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { isAdminLoggedIn } from "@/lib/adminAuth";
 import { AdminLogoutButton } from "./AdminLogoutButton";
+import { NotificationBell } from "./NotificationBell";
 
 const NAV = [
   { href: "/admin/customers", label: "Customers" },
@@ -21,8 +22,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="admin-shell">
       <div className="admin-side">
         <div>
-          <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, marginBottom: 20 }}>
-            Jackpot Bot Admin
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700 }}>
+              Jackpot Bot Admin
+            </div>
+            <NotificationBell />
           </div>
           <nav className="admin-nav">
             {NAV.map((item) => (
