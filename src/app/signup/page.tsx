@@ -30,7 +30,7 @@ function SignupPageInner() {
     password: "",
     tradingview_username: "",
     heard_from: "YouTube",
-    referral_code: "",
+    referral_code: (searchParams.get("ref") || "").toUpperCase(),
     trading_experience: "0-1",
     profession: "Private job",
   });

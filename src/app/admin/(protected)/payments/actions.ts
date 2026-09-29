@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSession } from "@/lib/adminAuth";
+import { COMMISSION_BY_PLAN, payableOnDate } from "@/lib/referral";
 
 export async function approvePayment(paymentId: string) {
   await requireAdminSession();
@@ -12,6 +13,7 @@ export async function approvePayment(paymentId: string) {
     .from("payments").select("*").eq("id", paymentId).single();
   if (fetchError || !payment) throw new Error("Payment not found");
 
+  const now = new Date();
   let expiry: string | null = null;
   const d = new Date();
   if (payment.plan === "monthly") {
@@ -31,12 +33,37 @@ export async function approvePayment(paymentId: string) {
 
   const { error: paymentError } = await supabase
     .from("payments")
-    .update({ status: "approved", approved_at: new Date().toISOString() })
+    .update({ status: "approved", approved_at: now.toISOString() })
     .eq("id", paymentId);
   if (paymentError) throw new Error(paymentError.message);
 
+  // GST invoice number — assigned once, only for approved payments
+  const { error: invoiceError } = await supabase.rpc("assign_invoice_number", { p_payment_id: paymentId });
+  if (invoiceError) console.error("Invoice number generation failed:", invoiceError.message);
+
+  // Referral commission: paid once per referred customer, on their first approved payment.
+  // Amount depends on which plan they bought; unlocks on the 5th of next month.
+  const commissionAmount = COMMISSION_BY_PLAN[payment.plan];
+  const { data: buyer } = await supabase
+    .from("profiles").select("referred_by").eq("id", payment.user_id).single();
+  if (buyer?.referred_by && commissionAmount) {
+    await supabase.from("commissions").upsert(
+      {
+        referrer_id: buyer.referred_by,
+        referred_user_id: payment.user_id,
+        payment_id: paymentId,
+        amount: commissionAmount,
+        plan: payment.plan,
+        payable_on: payableOnDate(now),
+        status: "pending",
+      },
+      { onConflict: "referred_user_id", ignoreDuplicates: true }
+    );
+  }
+
   revalidatePath("/admin/payments");
   revalidatePath("/admin/customers");
+  revalidatePath("/admin/payouts");
 }
 
 export async function rejectPayment(paymentId: string) {

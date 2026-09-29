@@ -50,7 +50,7 @@ function PaymentPageInner() {
     if (!promo) return;
     const { data, error } = await supabase.rpc("validate_promo_code", { p_code: promo });
     if (error || data === null) {
-      setPromoError("Invalid promo code.");
+      setPromoError("Invalid or expired promo code.");
       return;
     }
     setDiscount(data);
@@ -64,6 +64,18 @@ function PaymentPageInner() {
       return;
     }
     setSubmitting(true);
+
+    const { data: alreadyUsed, error: utrCheckError } = await supabase.rpc("is_utr_used", { p_utr: utr });
+    if (utrCheckError) {
+      setSubmitting(false);
+      setError("Could not verify this transaction number. Please try again.");
+      return;
+    }
+    if (alreadyUsed) {
+      setSubmitting(false);
+      setError("This UTR / transaction number has already been submitted. Each transaction can only be used once. If this is a mistake, contact support.");
+      return;
+    }
 
     const path = `${userId}/${Date.now()}_${file.name}`;
     const { error: uploadError } = await supabase.storage.from("payment-screenshots").upload(path, file);
@@ -86,7 +98,11 @@ function PaymentPageInner() {
 
     setSubmitting(false);
     if (insertError) {
-      setError(insertError.message);
+      if (insertError.message.toLowerCase().includes("duplicate") || insertError.code === "23505") {
+        setError("This UTR / transaction number has already been submitted.");
+      } else {
+        setError(insertError.message);
+      }
       return;
     }
     setSubmitted(true);
@@ -133,6 +149,17 @@ function PaymentPageInner() {
         <div style={{ fontSize: 22, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", marginTop: 8 }}>
           ₹{finalPrice.toLocaleString("en-IN")}
         </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 16, borderColor: "var(--red)", background: "rgba(229,72,77,0.06)" }}>
+        <h3 style={{ fontSize: 14, marginBottom: 8, color: "var(--red)" }}>⚠ Stay safe from scams</h3>
+        <ul className="muted" style={{ paddingLeft: 18, lineHeight: 1.7, fontSize: 13 }}>
+          <li>Only pay through the official Razorpay button below, or the UPI ID shared on this page — never to any other UPI ID, QR code, or bank account.</li>
+          <li>Before paying, check the website address in your browser matches our official site exactly.</li>
+          <li>We will never call, message, or DM you first asking for payment, OTP, or your password.</li>
+          <li>If anyone using our name, a similar name, or a "support agent" asks you to pay them directly, it is a scam — do not pay, and report it to us.</li>
+          <li>We are not responsible for any payment sent to an unofficial link, account, or person outside this page.</li>
+        </ul>
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>

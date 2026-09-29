@@ -109,3 +109,9 @@ th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: upp
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+
+@media print {
+  .no-print, .admin-side, header, nav { display: none !important; }
+  body { background: #fff; color: #000; }
+  .card { border: none; box-shadow: none; }
+}

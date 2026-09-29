@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/LogoutButton";
+import { ReferralCard } from "@/components/ReferralCard";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -16,6 +17,8 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false });
 
   const status = profile?.status ?? "no_plan";
+
+  const { data: referrals } = await supabase.rpc("get_my_referrals");
 
   return (
     <div className="wrap">
@@ -47,7 +50,7 @@ export default async function DashboardPage() {
         {!payments?.length && <p className="muted">No payments submitted yet.</p>}
         {!!payments?.length && (
           <table>
-            <thead><tr><th>Date</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead>
+            <thead><tr><th>Date</th><th>Plan</th><th>Amount</th><th>Status</th><th></th></tr></thead>
             <tbody>
               {payments.map((p) => (
                 <tr key={p.id}>
@@ -55,12 +58,23 @@ export default async function DashboardPage() {
                   <td>{p.plan}</td>
                   <td>₹{p.amount}</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                  <td>
+                    {p.status === "approved" && p.invoice_number && (
+                      <Link href={`/dashboard/invoice/${p.id}`} className="muted">Invoice →</Link>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      <ReferralCard
+        code={profile?.own_referral_code ?? ""}
+        upiId={profile?.upi_id ?? ""}
+        referrals={referrals ?? []}
+      />
 
       <Link href="/dashboard/support" className="btn-secondary" style={{ display: "inline-block" }}>
         Support

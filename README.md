@@ -1,4 +1,4 @@
-# ApexSignal — Jackpot Bot Subscription Platform
+# Jackpot Bot — Jackpot Bot Subscription Platform
 
 Full-stack subscription platform for the Jackpot Bot TradingView indicator: signup, plans,
 Razorpay Payment Link + manual UTR/screenshot approval, and a complete admin panel
@@ -88,6 +88,49 @@ Push this repo to GitHub, then import it into **Vercel** (or Netlify):
    live domain so password-reset links work correctly.
 
 ---
+
+## Referral program, GST invoices & anti-fraud (run once before deploying this version)
+
+Run `supabase/002_referrals.sql` once in the Supabase SQL Editor (after `schema.sql`). It's safe
+to re-run if needed.
+
+**Referral rewards**
+- Every customer gets their own referral code + share link (`/signup?ref=CODE`) on their dashboard.
+- When a referred friend's **first payment is approved**, the referrer earns a reward:
+  ₹500 for the Monthly plan, ₹3000 for the 2-Year Plan (`COMMISSION_BY_PLAN` in `src/lib/referral.ts`).
+  One reward per referred friend, ever.
+- The reward **unlocks on the 5th of the month after** the friend's payment was approved — not before.
+- Once unlocked, the customer enters their UPI ID and clicks "Withdraw" (RPC `request_payout`).
+- Admin → **Referral Payouts** shows requested payouts with the customer's UPI ID. Pay by UPI, enter
+  the UTR, click *Mark paid*. The customer then sees that UTR against their reward on their dashboard.
+
+**GST invoices**
+- Business details live in `src/lib/invoiceDetails.ts` (company name, GSTIN, product name, 18% tax
+  shown as included in the price) — edit that file if any of these change.
+- An invoice number (e.g. `ZT/2026-27/0001`, resetting each financial year) is assigned automatically
+  the moment admin approves a payment (`assign_invoice_number` SQL function, service-role only).
+- Customers see an "Invoice →" link next to each approved payment on their dashboard, opening
+  `/dashboard/invoice/[paymentId]` — a printable page with a "Download / Print Invoice" button
+  (uses the browser's Print → Save as PDF).
+
+**Duplicate UTR protection**
+- The same UTR/transaction number can never be submitted twice — enforced both in the UI (checked
+  before upload) and at the database level (a unique index), so this can't be bypassed even by
+  calling the API directly.
+
+**Fraud warning for customers**
+- The payment page shows a warning to only pay through the official Razorpay button or UPI ID on
+  that page, verify the site URL first, and never pay someone contacting them directly claiming to
+  be support — this is a disclaimer only, not a technical safeguard.
+
+**Promo codes**
+- Admin → **Promo Codes** has an optional expiry date; expired codes are rejected at checkout
+  (case-insensitive matching).
+
+**Security hardening**
+- `002_referrals.sql` locks down customer write access: customers can only edit their own UPI ID,
+  and can only insert a **pending** payment with no invoice number — so nobody can activate their
+  own plan, forge a paid invoice, or edit someone else's data through the API.
 
 ## How the payment flow works (Phase 1 — as specced)
 

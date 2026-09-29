@@ -7,6 +7,7 @@ import { NotificationBell } from "./NotificationBell";
 const NAV = [
   { href: "/admin/customers", label: "Customers" },
   { href: "/admin/payments", label: "Payment Approvals" },
+  { href: "/admin/payouts", label: "Referral Payouts" },
   { href: "/admin/promo-codes", label: "Promo Codes" },
   { href: "/admin/sales", label: "Sales Dashboard" },
   { href: "/admin/support", label: "Support Tickets" },

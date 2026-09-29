@@ -1,5 +1,5 @@
 -- ============================================================================
--- Jackpot Bot / ApexSignal — Supabase schema
+-- Jackpot Bot / Jackpot Bot — Supabase schema
 -- Run this once in Supabase SQL editor (Project -> SQL Editor -> New query).
 -- Safe to re-run: uses IF NOT EXISTS / OR REPLACE where possible.
 -- ============================================================================
