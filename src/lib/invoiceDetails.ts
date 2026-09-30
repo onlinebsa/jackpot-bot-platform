@@ -1,7 +1,7 @@
 // Shown on every customer invoice. Edit these if your business details change.
 export const INVOICE_DETAILS = {
   companyName: "Zenova Traders",
-  gstin: "10AKJPA1097N1ZL",
+  gstin: "10AKJPA1097N2ZL",
   businessAddress: "Shahbazpur Salem, PO. Bhikhanpur, Muzaffarpur, Bihar 842002",
   businessEmail: "info.zenova11@gmail.com",
   businessStateName: "Bihar",
