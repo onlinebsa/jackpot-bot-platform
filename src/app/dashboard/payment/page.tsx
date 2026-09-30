@@ -142,8 +142,8 @@ function PaymentPageInner() {
         <div className="field">
           <label>Plan</label>
           <select value={plan} onChange={(e) => setPlan(e.target.value)}>
-            <option value="monthly">Monthly, ₹5,000</option>
-            <option value="onetime">2-Year Plan, ₹60,000</option>
+            <option value="monthly">Starter Monthly Plan, ₹5,000</option>
+            <option value="onetime">2 Year Pro Plan, ₹60,000</option>
           </select>
         </div>
         <div className="field">

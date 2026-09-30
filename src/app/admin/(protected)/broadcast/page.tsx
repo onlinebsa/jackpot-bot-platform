@@ -4,8 +4,8 @@ import { BroadcastList } from "./BroadcastList";
 
 const SEGMENTS = [
   { key: "all", label: "All" },
-  { key: "monthly", label: "Active Monthly" },
-  { key: "onetime", label: "Active 2-Year Plan" },
+  { key: "monthly", label: "Active Starter Monthly Plan" },
+  { key: "onetime", label: "Active 2 Year Pro Plan" },
   { key: "expired", label: "Expired" },
   { key: "no_plan", label: "No plan" },
 ];

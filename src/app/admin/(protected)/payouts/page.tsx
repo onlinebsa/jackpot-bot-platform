@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PayoutActions } from "./PayoutActions";
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Monthly", onetime: "2-Year Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
 
 export default async function PayoutsPage() {
   const supabase = createAdminClient();

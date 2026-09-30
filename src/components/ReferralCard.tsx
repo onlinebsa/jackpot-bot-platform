@@ -16,7 +16,7 @@ type Reward = {
   payout_utr: string | null;
 };
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Monthly", onetime: "2-Year Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
 
 export function ReferralCard({ code, upiId, referrals }: { code: string; upiId: string; referrals: Reward[] }) {
   const router = useRouter();
@@ -62,8 +62,8 @@ export function ReferralCard({ code, upiId, referrals }: { code: string; upiId: 
     <div className="card" style={{ marginBottom: 16 }}>
       <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>Refer &amp; earn</div>
       <p className="muted" style={{ marginBottom: 12 }}>
-        Earn ₹{COMMISSION_BY_PLAN.monthly} when a friend joins with your code and takes the Monthly plan,
-        or ₹{COMMISSION_BY_PLAN.onetime} for the 2-Year Plan. Rewards unlock on the {PAYOUT_DAY}th of the
+        Earn ₹{COMMISSION_BY_PLAN.monthly} when a friend joins with your code and takes the Starter Monthly Plan,
+        or ₹{COMMISSION_BY_PLAN.onetime} for the 2 Year Pro Plan. Rewards unlock on the {PAYOUT_DAY}th of the
         month after their payment is approved.
       </p>
 

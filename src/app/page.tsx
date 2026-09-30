@@ -19,7 +19,7 @@ export default function Home() {
       <div className="grid-2">
         <div className="card">
           <div className="muted" style={{ textTransform: "uppercase", fontSize: 12 }}>Limited-time offer</div>
-          <h3 style={{ fontSize: 20, margin: "8px 0" }}>Monthly</h3>
+          <h3 style={{ fontSize: 20, margin: "8px 0" }}>Starter Monthly Plan</h3>
           <div style={{ marginBottom: 4 }}>
             <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: 8 }}>₹15,000</span>
             <span style={{ fontSize: 26, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif" }}>₹5,000</span>
@@ -33,13 +33,13 @@ export default function Home() {
             <li>Free training / demo class</li>
           </ul>
           <Link href="/signup?plan=monthly" className="btn" style={{ display: "block", textAlign: "center" }}>
-            Choose Monthly
+            Choose Starter Monthly Plan
           </Link>
         </div>
 
         <div className="card" style={{ borderColor: "var(--amber)" }}>
           <div style={{ color: "var(--amber)", textTransform: "uppercase", fontSize: 12 }}>Best value</div>
-          <h3 style={{ fontSize: 20, margin: "8px 0" }}>2-Year Plan</h3>
+          <h3 style={{ fontSize: 20, margin: "8px 0" }}>2 Year Pro Plan</h3>
           <div style={{ marginBottom: 4 }}>
             <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: 8 }}>₹1,50,000</span>
             <span style={{ fontSize: 26, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif" }}>₹60,000</span>
@@ -52,7 +52,7 @@ export default function Home() {
             <li>Free training / demo class</li>
           </ul>
           <Link href="/signup?plan=onetime" className="btn" style={{ display: "block", textAlign: "center" }}>
-            Choose 2-Year Plan
+            Choose 2 Year Pro Plan
           </Link>
         </div>
       </div>

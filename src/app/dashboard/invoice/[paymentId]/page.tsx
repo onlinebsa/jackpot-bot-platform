@@ -57,7 +57,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ paymen
   ].filter(Boolean).join(", ");
 
   return (
-    <div className="wrap-wide">
+    <div className="wrap-wide invoice-page">
+      <style>{`
+        .invoice-page { background: #ffffff; }
+        .invoice-page, .invoice-page * { color: #111111 !important; }
+        .invoice-page .muted { color: #555555 !important; }
+        .invoice-page #invoice { background: #ffffff !important; border: 1px solid #dddddd !important; }
+        .invoice-page table th, .invoice-page table td { border-color: #dddddd !important; }
+        @media print {
+          .invoice-page { background: #ffffff !important; }
+        }
+      `}</style>
       <PrintButton />
       <div className="card" id="invoice">
         <div style={{ textAlign: "center", marginBottom: 20 }}>
@@ -131,9 +141,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ paymen
           {payment.utr && <p style={{ margin: "4px 0" }}>Transaction Ref (UTR): {payment.utr}</p>}
         </div>
 
-        <div style={{ borderTop: "1px solid var(--border)", paddingTop: 14 }}>
+        <div style={{ borderTop: "1px solid #dddddd", paddingTop: 14 }}>
           <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 8 }}>Terms &amp; Conditions</div>
-          <ol style={{ paddingLeft: 18, fontSize: 12, color: "var(--muted)", lineHeight: 1.6 }}>
+          <ol style={{ paddingLeft: 18, fontSize: 12, color: "#555555", lineHeight: 1.6 }}>
             {INVOICE_DETAILS.terms.map((t, i) => <li key={i} style={{ marginBottom: 6 }}>{t}</li>)}
           </ol>
         </div>
