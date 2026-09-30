@@ -29,6 +29,8 @@ function PaymentPageInner() {
   const [promoError, setPromoError] = useState("");
   const [utr, setUtr] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [tvUsername, setTvUsername] = useState("");
+  const [tvError, setTvError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -50,32 +52,38 @@ function PaymentPageInner() {
     if (!promo) return;
     const { data, error } = await supabase.rpc("validate_promo_code", { p_code: promo });
     if (error || data === null) {
-      setPromoError("Invalid or expired promo code.");
+      setPromoError("Invalid promo code.");
       return;
     }
     setDiscount(data);
   }
 
+  function validateTvUsername() {
+    if (!tvUsername.trim()) {
+      setTvError("Enter your TradingView username, this is required to grant indicator access.");
+      return false;
+    }
+    setTvError("");
+    return true;
+  }
+
+  async function handleRazorpayClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (!validateTvUsername() || !userId) {
+      e.preventDefault();
+      return;
+    }
+    await supabase.from("profiles").update({ tradingview_username: tvUsername.trim() }).eq("id", userId);
+  }
+
   async function handleManualSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (!validateTvUsername()) return;
     if (!utr || !file || !userId) {
       setError("Enter the UTR and upload your payment screenshot.");
       return;
     }
     setSubmitting(true);
-
-    const { data: alreadyUsed, error: utrCheckError } = await supabase.rpc("is_utr_used", { p_utr: utr });
-    if (utrCheckError) {
-      setSubmitting(false);
-      setError("Could not verify this transaction number. Please try again.");
-      return;
-    }
-    if (alreadyUsed) {
-      setSubmitting(false);
-      setError("This UTR / transaction number has already been submitted. Each transaction can only be used once. If this is a mistake, contact support.");
-      return;
-    }
 
     const path = `${userId}/${Date.now()}_${file.name}`;
     const { error: uploadError } = await supabase.storage.from("payment-screenshots").upload(path, file);
@@ -94,15 +102,16 @@ function PaymentPageInner() {
       screenshot_url: path,
       method: "manual",
       status: "pending",
+      tradingview_username: tvUsername.trim(),
     });
+
+    if (!insertError) {
+      await supabase.from("profiles").update({ tradingview_username: tvUsername.trim() }).eq("id", userId);
+    }
 
     setSubmitting(false);
     if (insertError) {
-      if (insertError.message.toLowerCase().includes("duplicate") || insertError.code === "23505") {
-        setError("This UTR / transaction number has already been submitted.");
-      } else {
-        setError(insertError.message);
-      }
+      setError(insertError.message);
       return;
     }
     setSubmitted(true);
@@ -112,9 +121,9 @@ function PaymentPageInner() {
     return (
       <div className="wrap">
         <div className="card">
-          <h2 style={{ fontSize: 18, marginBottom: 8 }}>Payment submitted ✓</h2>
+          <h2 style={{ fontSize: 18, marginBottom: 8 }}>Payment submitted</h2>
           <p className="muted">
-            We've received your payment details. Our team will verify and activate your access shortly —
+            We've received your payment details. Our team will verify and activate your access shortly,
             you'll be notified once approved.
           </p>
           <button className="btn" style={{ marginTop: 16 }} onClick={() => router.push("/dashboard")}>
@@ -133,8 +142,8 @@ function PaymentPageInner() {
         <div className="field">
           <label>Plan</label>
           <select value={plan} onChange={(e) => setPlan(e.target.value)}>
-            <option value="monthly">Monthly — ₹5,000</option>
-            <option value="onetime">2-Year Plan — ₹60,000</option>
+            <option value="monthly">Monthly, ₹5,000</option>
+            <option value="onetime">2-Year Plan, ₹60,000</option>
           </select>
         </div>
         <div className="field">
@@ -147,37 +156,45 @@ function PaymentPageInner() {
           {discount !== null && <p className="muted" style={{ color: "var(--green)" }}>{discount}% off applied</p>}
         </div>
         <div style={{ fontSize: 22, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif", marginTop: 8 }}>
-          ₹{finalPrice.toLocaleString("en-IN")}
+          Rs. {finalPrice.toLocaleString("en-IN")}
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: 16, borderColor: "var(--red)", background: "rgba(229,72,77,0.06)" }}>
-        <h3 style={{ fontSize: 14, marginBottom: 8, color: "var(--red)" }}>⚠ Stay safe from scams</h3>
-        <ul className="muted" style={{ paddingLeft: 18, lineHeight: 1.7, fontSize: 13 }}>
-          <li>Only pay through the official Razorpay button below, or the UPI ID shared on this page — never to any other UPI ID, QR code, or bank account.</li>
-          <li>Before paying, check the website address in your browser matches our official site exactly.</li>
-          <li>We will never call, message, or DM you first asking for payment, OTP, or your password.</li>
-          <li>If anyone using our name, a similar name, or a "support agent" asks you to pay them directly, it is a scam — do not pay, and report it to us.</li>
-          <li>We are not responsible for any payment sent to an unofficial link, account, or person outside this page.</li>
-        </ul>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="field" style={{ marginBottom: 0 }}>
+          <label>TradingView username * (required to grant indicator access)</label>
+          <input
+            required
+            value={tvUsername}
+            onChange={(e) => { setTvUsername(e.target.value); if (tvError) setTvError(""); }}
+            placeholder="Your exact TradingView username"
+          />
+          {tvError && <p className="error" style={{ marginTop: 6 }}>{tvError}</p>}
+        </div>
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Option A — Pay via Razorpay</h3>
+        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Option A, Pay via Razorpay</h3>
         <p className="muted" style={{ marginBottom: 12 }}>
           Pay through our secure Razorpay link, then come back and submit your UTR below so we can match it.
         </p>
         {RAZORPAY_LINKS[plan] ? (
-          <a href={RAZORPAY_LINKS[plan]} target="_blank" className="btn" style={{ display: "inline-block" }}>
-            Pay ₹{finalPrice.toLocaleString("en-IN")} on Razorpay
+          <a
+            href={RAZORPAY_LINKS[plan]}
+            target="_blank"
+            onClick={handleRazorpayClick}
+            className="btn"
+            style={{ display: "inline-block" }}
+          >
+            Pay Rs. {finalPrice.toLocaleString("en-IN")} on Razorpay
           </a>
         ) : (
-          <p className="muted">Payment link coming soon — use the manual option below.</p>
+          <p className="muted">Payment link coming soon, use the manual option below.</p>
         )}
       </div>
 
       <div className="card">
-        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Option B — Manual UPI + submit for approval</h3>
+        <h3 style={{ fontSize: 15, marginBottom: 8 }}>Option B, Manual UPI plus submit for approval</h3>
         <form onSubmit={handleManualSubmit}>
           <div className="field">
             <label>UTR / Transaction number *</label>
@@ -189,7 +206,7 @@ function PaymentPageInner() {
           </div>
           {error && <p className="error" style={{ marginBottom: 12 }}>{error}</p>}
           <button className="btn" disabled={submitting}>
-            {submitting ? "Submitting…" : "Submit for approval"}
+            {submitting ? "Submitting..." : "Submit for approval"}
           </button>
         </form>
       </div>
