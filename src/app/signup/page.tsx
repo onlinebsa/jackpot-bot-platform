@@ -161,12 +161,12 @@ function SignupPageInner() {
         </div>
         <div className="field">
           <label>State / Pincode *</label>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <select
               required
               value={form.address_state}
               onChange={(e) => update("address_state", e.target.value)}
-              style={{ flex: 1.5 }}
+              style={{ flex: 1.5, height: 42, boxSizing: "border-box" }}
             >
               <option value="">Select state</option>
               {STATES.map((s) => (
@@ -178,7 +178,7 @@ function SignupPageInner() {
               value={form.address_pincode}
               onChange={(e) => update("address_pincode", e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="Pincode"
-              style={{ flex: 1 }}
+              style={{ flex: 1, height: 42, boxSizing: "border-box" }}
             />
           </div>
         </div>
