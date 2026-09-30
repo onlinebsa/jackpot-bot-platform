@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -49,6 +49,13 @@ function SignupPageInner() {
   const [markets, setMarkets] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      setForm((f) => ({ ...f, referral_code: ref }));
+    }
+  }, [searchParams]);
 
   function update(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -160,27 +167,26 @@ function SignupPageInner() {
           <input required value={form.address_district} onChange={(e) => update("address_district", e.target.value)} />
         </div>
         <div className="field">
-          <label>State / Pincode *</label>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <select
-              required
-              value={form.address_state}
-              onChange={(e) => update("address_state", e.target.value)}
-              style={{ flex: 1.5, height: 42, boxSizing: "border-box" }}
-            >
-              <option value="">Select state</option>
-              {STATES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <input
-              required
-              value={form.address_pincode}
-              onChange={(e) => update("address_pincode", e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="Pincode"
-              style={{ flex: 1, height: 42, boxSizing: "border-box" }}
-            />
-          </div>
+          <label>State *</label>
+          <select
+            required
+            value={form.address_state}
+            onChange={(e) => update("address_state", e.target.value)}
+          >
+            <option value="">Select state</option>
+            {STATES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <label>Pincode *</label>
+          <input
+            required
+            value={form.address_pincode}
+            onChange={(e) => update("address_pincode", e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="6-digit pincode"
+          />
         </div>
         <div className="field">
           <label>Password * (6–12 chars, e.g. name+number+symbol)</label>
