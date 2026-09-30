@@ -6,6 +6,15 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 const MARKETS = ["Crypto Futures", "Forex", "Indian F&O", "MCX"];
+const STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+  "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+  "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+  "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+  "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh",
+  "Lakshadweep", "Puducherry",
+];
 
 export default function SignupPage() {
   return (
@@ -28,9 +37,12 @@ function SignupPageInner() {
     same_as_whatsapp: "yes",
     calling_number: "",
     password: "",
-    tradingview_username: "",
+    address_village_town: "",
+    address_district: "",
+    address_state: "",
+    address_pincode: "",
     heard_from: "YouTube",
-    referral_code: (searchParams.get("ref") || "").toUpperCase(),
+    referral_code: "",
     trading_experience: "0-1",
     profession: "Private job",
   });
@@ -58,6 +70,10 @@ function SignupPageInner() {
       setError("Select at least one market you trade.");
       return;
     }
+    if (!/^\d{6}$/.test(form.address_pincode)) {
+      setError("Enter a valid 6-digit pincode.");
+      return;
+    }
 
     const calling_number = form.same_as_whatsapp === "yes" ? form.whatsapp_number : form.calling_number;
     if (form.same_as_whatsapp === "no" && !form.calling_number) {
@@ -75,7 +91,10 @@ function SignupPageInner() {
           full_name: form.full_name,
           whatsapp_number: form.whatsapp_number,
           calling_number,
-          tradingview_username: form.tradingview_username,
+          address_village_town: form.address_village_town,
+          address_district: form.address_district,
+          address_state: form.address_state,
+          address_pincode: form.address_pincode,
           heard_from: form.heard_from,
           referral_code: form.referral_code || null,
           trading_experience: form.trading_experience,
@@ -133,12 +152,39 @@ function SignupPageInner() {
           </div>
         )}
         <div className="field">
-          <label>Password * (6–12 chars, e.g. name+number+symbol)</label>
-          <input required type="password" value={form.password} onChange={(e) => update("password", e.target.value)} />
+          <label>Address — Village/Town *</label>
+          <input required value={form.address_village_town} onChange={(e) => update("address_village_town", e.target.value)} />
         </div>
         <div className="field">
-          <label>TradingView username * (used to grant indicator access)</label>
-          <input required value={form.tradingview_username} onChange={(e) => update("tradingview_username", e.target.value)} />
+          <label>District *</label>
+          <input required value={form.address_district} onChange={(e) => update("address_district", e.target.value)} />
+        </div>
+        <div className="field">
+          <label>State / Pincode *</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            <select
+              required
+              value={form.address_state}
+              onChange={(e) => update("address_state", e.target.value)}
+              style={{ flex: 1.5 }}
+            >
+              <option value="">Select state</option>
+              {STATES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <input
+              required
+              value={form.address_pincode}
+              onChange={(e) => update("address_pincode", e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="Pincode"
+              style={{ flex: 1 }}
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label>Password * (6–12 chars, e.g. name+number+symbol)</label>
+          <input required type="password" value={form.password} onChange={(e) => update("password", e.target.value)} />
         </div>
         <div className="field">
           <label>How did you hear about us? *</label>
