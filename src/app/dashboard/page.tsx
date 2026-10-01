@@ -76,9 +76,14 @@ export default async function DashboardPage() {
         referrals={referrals ?? []}
       />
 
-      <Link href="/dashboard/support" className="btn-secondary" style={{ display: "inline-block" }}>
-        Support
-      </Link>
+      <div style={{ display: "flex", gap: 10 }}>
+        <Link href="/dashboard/support" className="btn-secondary" style={{ display: "inline-block" }}>
+          Support
+        </Link>
+        <Link href="/dashboard/feedback" className="btn-secondary" style={{ display: "inline-block" }}>
+          Feedback
+        </Link>
+      </div>
     </div>
   );
 }
