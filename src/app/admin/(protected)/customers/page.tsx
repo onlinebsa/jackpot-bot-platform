@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ExportCsvButton } from "@/components/ExportCsvButton";
 
 export default async function AdminCustomersPage() {
   const supabase = createAdminClient();
@@ -17,6 +18,7 @@ export default async function AdminCustomersPage() {
           DEBUG ERROR: {JSON.stringify(error, null, 2)}
         </pre>
       )}
+      <ExportCsvButton basePath="/admin/export/customers" />
       <div className="card">
         <table>
           <thead>

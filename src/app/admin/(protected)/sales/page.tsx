@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RevenueChart } from "./RevenueChart";
 import { ReminderButton } from "./ReminderButton";
+import { ExportCsvButton } from "@/components/ExportCsvButton";
 
 export default async function SalesDashboardPage() {
   const supabase = createAdminClient();
@@ -15,7 +16,6 @@ export default async function SalesDashboardPage() {
 
   const totalRevenue = (approvedPayments ?? []).reduce((sum, p) => sum + Number(p.amount), 0);
 
-  // Daily revenue, last 7 days
   const daily = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -26,7 +26,6 @@ export default async function SalesDashboardPage() {
     return { label, value };
   });
 
-  // Monthly revenue, last 6 months
   const monthly = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - i));
@@ -70,6 +69,8 @@ export default async function SalesDashboardPage() {
       <div style={{ marginBottom: 20 }}>
         <RevenueChart daily={daily} monthly={monthly} />
       </div>
+
+      <ExportCsvButton basePath="/admin/export/sales" />
 
       <div className="card">
         <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>
