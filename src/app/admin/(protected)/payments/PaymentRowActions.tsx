@@ -1,10 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { approvePayment, rejectPayment, getScreenshotUrl } from "./actions";
+import { approvePayment, rejectPayment, getScreenshotUrl, markTvAccessGranted } from "./actions";
 
-export function PaymentRowActions({ paymentId, screenshotPath }: { paymentId: string; screenshotPath: string | null }) {
+export function PaymentRowActions({
+  paymentId,
+  screenshotPath,
+  status,
+  tvGranted,
+}: {
+  paymentId: string;
+  screenshotPath: string | null;
+  status: string;
+  tvGranted: boolean;
+}) {
   const [loading, setLoading] = useState(false);
+  const [grantLoading, setGrantLoading] = useState(false);
 
   async function handleApprove() {
     if (!confirm("Approve this payment and activate the customer's plan?")) return;
@@ -35,13 +46,36 @@ export function PaymentRowActions({ paymentId, screenshotPath }: { paymentId: st
     else alert("Could not load screenshot.");
   }
 
+  async function handleGrantTv() {
+    if (!confirm("Mark TradingView access as granted for this customer?")) return;
+    setGrantLoading(true);
+    try {
+      await markTvAccessGranted(paymentId);
+    } catch (e: any) {
+      alert(e.message);
+    }
+    setGrantLoading(false);
+  }
+
   return (
-    <div style={{ display: "flex", gap: 6 }}>
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
       {screenshotPath && (
         <button className="btn-secondary btn-sm" onClick={handleView}>View proof</button>
       )}
-      <button className="btn btn-sm" onClick={handleApprove} disabled={loading}>Approve</button>
-      <button className="btn-danger btn-sm" onClick={handleReject} disabled={loading}>Reject</button>
+      {status === "pending" && (
+        <>
+          <button className="btn btn-sm" onClick={handleApprove} disabled={loading}>Approve</button>
+          <button className="btn-danger btn-sm" onClick={handleReject} disabled={loading}>Reject</button>
+        </>
+      )}
+      {status === "approved" && !tvGranted && (
+        <button className="btn btn-sm" onClick={handleGrantTv} disabled={grantLoading}>
+          {grantLoading ? "Granting…" : "Grant TV access"}
+        </button>
+      )}
+      {status === "approved" && tvGranted && (
+        <span className="badge badge-approved" style={{ fontSize: 11 }}>TV access granted</span>
+      )}
     </div>
   );
 }

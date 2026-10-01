@@ -20,7 +20,6 @@ export async function approvePayment(paymentId: string) {
     d.setMonth(d.getMonth() + 1);
     expiry = d.toISOString();
   } else if (payment.plan === "onetime") {
-    // "onetime" plan = the 2-Year Plan (₹60,000) — expires 2 years from approval
     d.setFullYear(d.getFullYear() + 2);
     expiry = d.toISOString();
   }
@@ -37,12 +36,9 @@ export async function approvePayment(paymentId: string) {
     .eq("id", paymentId);
   if (paymentError) throw new Error(paymentError.message);
 
-  // GST invoice number — assigned once, only for approved payments
   const { error: invoiceError } = await supabase.rpc("assign_invoice_number", { p_payment_id: paymentId });
   if (invoiceError) console.error("Invoice number generation failed:", invoiceError.message);
 
-  // Referral commission: paid once per referred customer, on their first approved payment.
-  // Amount depends on which plan they bought; unlocks on the 5th of next month.
   const commissionAmount = COMMISSION_BY_PLAN[payment.plan];
   const { data: buyer } = await supabase
     .from("profiles").select("referred_by").eq("id", payment.user_id).single();
@@ -80,4 +76,15 @@ export async function getScreenshotUrl(path: string): Promise<string | null> {
   const { data, error } = await supabase.storage.from("payment-screenshots").createSignedUrl(path, 300);
   if (error) return null;
   return data.signedUrl;
+}
+
+export async function markTvAccessGranted(paymentId: string) {
+  await requireAdminSession();
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("payments")
+    .update({ tv_access_granted: true, tv_access_granted_at: new Date().toISOString() })
+    .eq("id", paymentId);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/payments");
 }

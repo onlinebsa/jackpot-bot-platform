@@ -20,7 +20,8 @@ export default async function AdminPaymentsPage() {
         <table>
           <thead>
             <tr>
-              <th>Customer</th><th>Plan</th><th>Amount</th><th>Promo</th><th>UTR</th><th>Status</th><th></th>
+              <th>Customer</th><th>Plan</th><th>Amount</th><th>Promo</th><th>UTR</th>
+              <th>TradingView</th><th>Status</th><th></th>
             </tr>
           </thead>
           <tbody>
@@ -31,15 +32,19 @@ export default async function AdminPaymentsPage() {
                 <td>₹{p.amount}</td>
                 <td className="muted">{p.promo_code ?? "—"}</td>
                 <td className="muted">{p.utr ?? "—"}</td>
+                <td className="muted">{p.tradingview_username ?? "—"}</td>
                 <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                 <td>
-                  {p.status === "pending" && (
-                    <PaymentRowActions paymentId={p.id} screenshotPath={p.screenshot_url} />
-                  )}
+                  <PaymentRowActions
+                    paymentId={p.id}
+                    screenshotPath={p.screenshot_url}
+                    status={p.status}
+                    tvGranted={p.tv_access_granted}
+                  />
                 </td>
               </tr>
             ))}
-            {!payments?.length && <tr><td colSpan={7} className="muted">No payments yet.</td></tr>}
+            {!payments?.length && <tr><td colSpan={8} className="muted">No payments yet.</td></tr>}
           </tbody>
         </table>
       </div>
