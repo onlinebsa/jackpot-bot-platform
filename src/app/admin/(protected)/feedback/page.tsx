@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { revalidatePath } from "next/cache";
 
 const RATING_COLOR: Record<number, string> = {
   5: "#3FB68B",
@@ -7,6 +8,16 @@ const RATING_COLOR: Record<number, string> = {
   2: "#F2994A",
   1: "#E5484D",
 };
+
+async function togglePublish(formData: FormData) {
+  "use server";
+  const id = formData.get("id") as string;
+  const next = formData.get("next") === "true";
+  const supabase = createAdminClient();
+  await supabase.from("feedback").update({ is_published: next }).eq("id", id);
+  revalidatePath("/admin/feedback");
+  revalidatePath("/");
+}
 
 export default async function AdminFeedbackPage() {
   const supabase = createAdminClient();
@@ -22,6 +33,7 @@ export default async function AdminFeedbackPage() {
 
   const all = feedback || [];
   const totalReviews = all.length;
+  const publishedCount = all.filter((f) => f.is_published).length;
   const avgRating = totalReviews
     ? (all.reduce((sum, f) => sum + (f.rating || 0), 0) / totalReviews).toFixed(1)
     : "—";
@@ -30,7 +42,6 @@ export default async function AdminFeedbackPage() {
     if (f.rating >= 1 && f.rating <= 5) counts[f.rating]++;
   });
 
-  // Donut chart math (SVG stroke-dasharray trick)
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
   let offsetAcc = 0;
@@ -47,7 +58,6 @@ export default async function AdminFeedbackPage() {
     return segment;
   });
 
-  // Reviews over last 14 days (bar chart)
   const days: { label: string; count: number }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
@@ -75,14 +85,17 @@ export default async function AdminFeedbackPage() {
     <div className="wrap-wide">
       <h2>Customer feedback</h2>
       <p className="muted" style={{ marginBottom: 20 }}>
-        What customers are saying, with ratings and profit screenshots where attached.
+        {publishedCount} of {totalReviews} reviews are published on the homepage. Use "Publish" below to show a review publicly.
       </p>
 
-      {/* Top stat cards */}
       <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
         <div className="card" style={{ padding: 16, minWidth: 140 }}>
           <div style={{ fontSize: 26, fontWeight: 700 }}>{totalReviews}</div>
           <div className="muted" style={{ fontSize: 12 }}>Total reviews</div>
+        </div>
+        <div className="card" style={{ padding: 16, minWidth: 140 }}>
+          <div style={{ fontSize: 26, fontWeight: 700, color: "#3FB68B" }}>{publishedCount}</div>
+          <div className="muted" style={{ fontSize: 12 }}>Published on homepage</div>
         </div>
         <div className="card" style={{ padding: 16, minWidth: 140 }}>
           <div style={{ fontSize: 26, fontWeight: 700, color: "#F5A623" }}>
@@ -98,9 +111,7 @@ export default async function AdminFeedbackPage() {
         ))}
       </div>
 
-      {/* Donut chart + bar chart side by side */}
       <div style={{ display: "flex", gap: 20, marginBottom: 24, flexWrap: "wrap" }}>
-        {/* Donut */}
         <div className="card" style={{ padding: 20, display: "flex", alignItems: "center", gap: 20 }}>
           <svg width="140" height="140" viewBox="0 0 140 140">
             <g transform="translate(70,70) rotate(-90)">
@@ -138,7 +149,6 @@ export default async function AdminFeedbackPage() {
           </div>
         </div>
 
-        {/* Bar chart: reviews per day, last 14 days */}
         <div className="card" style={{ padding: 20, flex: 1, minWidth: 320 }}>
           <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>Reviews — last 14 days</div>
           <svg viewBox="0 0 420 140" style={{ width: "100%", height: "auto" }}>
@@ -165,7 +175,6 @@ export default async function AdminFeedbackPage() {
         </div>
       </div>
 
-      {/* Individual reviews */}
       {withUrls.length === 0 ? (
         <p className="muted">No feedback submitted yet.</p>
       ) : (
@@ -175,28 +184,48 @@ export default async function AdminFeedbackPage() {
             className="card"
             style={{ marginBottom: 16, padding: 16, borderLeft: `4px solid ${RATING_COLOR[f.rating] || "#555"}` }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, flexWrap: "wrap", gap: 8 }}>
               <div>
                 <strong>{f.customer_name}</strong>{" "}
                 <span style={{ color: RATING_COLOR[f.rating] || "#555", fontSize: 13 }}>
                   {"★".repeat(f.rating || 0)}
                   <span style={{ color: "#555" }}>{"★".repeat(5 - (f.rating || 0))}</span>
                 </span>
+                {" "}
+                <span
+                  className="muted"
+                  style={{
+                    fontSize: 11,
+                    padding: "2px 8px",
+                    borderRadius: 3,
+                    background: f.is_published ? "rgba(63,182,139,0.15)" : "rgba(229,72,77,0.15)",
+                    color: f.is_published ? "#3FB68B" : "#E5484D",
+                  }}
+                >
+                  {f.is_published ? "Published" : "Not published"}
+                </span>
               </div>
               <span className="muted" style={{ fontSize: 12 }}>
                 {new Date(f.created_at).toLocaleString("en-IN")}
               </span>
             </div>
-            <p style={{ marginBottom: f.screenshotUrl ? 12 : 0 }}>{f.feedback_text}</p>
+            <p style={{ marginBottom: f.screenshotUrl ? 12 : 8 }}>{f.feedback_text}</p>
             {f.screenshotUrl && (
               <a href={f.screenshotUrl} target="_blank" rel="noopener noreferrer">
                 <img
                   src={f.screenshotUrl}
                   alt="Profit screenshot"
-                  style={{ maxWidth: 280, borderRadius: 4, border: "1px solid var(--border, #22303C)" }}
+                  style={{ maxWidth: 280, borderRadius: 4, border: "1px solid var(--border, #22303C)", display: "block", marginBottom: 12 }}
                 />
               </a>
             )}
+            <form action={togglePublish}>
+              <input type="hidden" name="id" value={f.id} />
+              <input type="hidden" name="next" value={(!f.is_published).toString()} />
+              <button className={f.is_published ? "btn-secondary" : "btn"} type="submit">
+                {f.is_published ? "Unpublish" : "Publish to homepage"}
+              </button>
+            </form>
           </div>
         ))
       )}
