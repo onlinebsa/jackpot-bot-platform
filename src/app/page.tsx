@@ -1,6 +1,36 @@
 import Link from "next/link";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { FeedbackGrid } from "@/components/FeedbackGrid";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createAdminClient();
+  const { data: feedback } = await supabase
+    .from("feedback")
+    .select("id, customer_name, feedback_text, rating, screenshot_path, created_at")
+    .eq("is_published", true)
+    .order("created_at", { ascending: false })
+    .limit(12);
+
+  const items = await Promise.all(
+    (feedback ?? []).map(async (f) => {
+      let screenshotUrl: string | null = null;
+      if (f.screenshot_path) {
+        const { data } = await supabase.storage
+          .from("feedback-screenshots")
+          .createSignedUrl(f.screenshot_path, 60 * 60 * 24);
+        screenshotUrl = data?.signedUrl ?? null;
+      }
+      return {
+        id: f.id,
+        customer_name: f.customer_name,
+        feedback_text: f.feedback_text,
+        rating: f.rating,
+        created_at: f.created_at,
+        screenshotUrl,
+      };
+    })
+  );
+
   return (
     <div className="wrap-wide">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
@@ -56,6 +86,8 @@ export default function Home() {
           </Link>
         </div>
       </div>
+
+      <FeedbackGrid items={items} />
 
       <p className="muted" style={{ marginTop: 40, fontSize: 13 }}>
         Questions? Message us on Telegram <a href="https://t.me/jackpotbot26" target="_blank">@jackpotbot26</a>

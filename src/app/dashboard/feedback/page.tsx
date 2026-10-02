@@ -7,6 +7,8 @@ export default function FeedbackPage() {
   const supabase = createClient();
   const [name, setName] = useState("");
   const [text, setText] = useState("");
+  const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -60,6 +62,7 @@ export default function FeedbackPage() {
         user_id: user.id,
         customer_name: name.trim(),
         feedback_text: text.trim(),
+        rating,
         screenshot_path: screenshotPath,
       });
       if (insertError) throw insertError;
@@ -67,6 +70,7 @@ export default function FeedbackPage() {
       setMessage("Thank you! Your feedback has been submitted.");
       setText("");
       setFile(null);
+      setRating(5);
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -85,6 +89,28 @@ export default function FeedbackPage() {
         <div className="field">
           <label>Your name *</label>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+        </div>
+
+        <div className="field">
+          <label>Your rating *</label>
+          <div style={{ display: "flex", gap: 4 }}>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <span
+                key={n}
+                onClick={() => setRating(n)}
+                onMouseEnter={() => setHoverRating(n)}
+                onMouseLeave={() => setHoverRating(0)}
+                style={{
+                  cursor: "pointer",
+                  fontSize: 28,
+                  lineHeight: 1,
+                  color: (hoverRating || rating) >= n ? "#FBBF24" : "#555",
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="field">
