@@ -13,11 +13,22 @@ export async function updateSettings(formData: FormData) {
     .map((v) => Number(v))
     .filter((n) => !Number.isNaN(n));
 
+  const link_support = String(formData.get("link_support") || "").trim();
+  const link_demo_training = String(formData.get("link_demo_training") || "").trim();
+  const link_tv_setup = String(formData.get("link_tv_setup") || "").trim();
+
   const { error } = await supabase
     .from("admin_settings")
-    .update({ whatsapp_number, reminder_days: reminder_days.length ? reminder_days : [1, 3, 5, 7] })
+    .update({
+      whatsapp_number,
+      reminder_days: reminder_days.length ? reminder_days : [1, 3, 5, 7],
+      link_support,
+      link_demo_training,
+      link_tv_setup,
+    })
     .eq("id", 1);
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/settings");
+  revalidatePath("/dashboard");
 }

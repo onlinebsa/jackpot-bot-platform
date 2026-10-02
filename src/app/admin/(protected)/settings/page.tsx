@@ -36,6 +36,27 @@ export default async function AdminSettingsPage() {
           </div>
         </div>
 
+        <hr style={{ margin: "20px 0", border: "none", borderTop: "1px solid var(--border, #22303C)" }} />
+
+        <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>
+          Customer quick-action links
+        </div>
+
+        <div className="field">
+          <label>Support — Telegram link</label>
+          <input name="link_support" defaultValue={settings?.link_support ?? ""} placeholder="https://t.me/yourchannel" />
+        </div>
+
+        <div className="field">
+          <label>Demo Training — Google Meet link</label>
+          <input name="link_demo_training" defaultValue={settings?.link_demo_training ?? ""} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+        </div>
+
+        <div className="field">
+          <label>TV Setup & Setting — Google Meet link</label>
+          <input name="link_tv_setup" defaultValue={settings?.link_tv_setup ?? ""} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+        </div>
+
         <button className="btn">Save settings</button>
       </form>
     </div>
