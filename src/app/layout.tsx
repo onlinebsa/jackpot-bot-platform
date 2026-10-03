@@ -1,4 +1,5 @@
 import "./globals.css";
+import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 
 export const metadata = {
   title: "Jackpot Bot",
@@ -15,7 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <WhatsAppWidget />
+      </body>
     </html>
   );
 }
