@@ -21,7 +21,8 @@ export async function setAdminSessionCookie() {
     secure: true,
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    // No maxAge set on purpose: this makes it a session cookie,
+    // which browsers clear automatically when the browser is fully closed.
   });
 }
 
