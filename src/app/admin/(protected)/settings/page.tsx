@@ -57,6 +57,27 @@ export default async function AdminSettingsPage() {
           <input name="link_tv_setup" defaultValue={settings?.link_tv_setup ?? ""} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
         </div>
 
+        <hr style={{ margin: "20px 0", border: "none", borderTop: "1px solid var(--border, #22303C)" }} />
+
+        <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>
+          Social media links (shown on homepage)
+        </div>
+
+        <div className="field">
+          <label>YouTube</label>
+          <input name="link_youtube" defaultValue={settings?.link_youtube ?? ""} placeholder="https://youtube.com/@yourchannel" />
+        </div>
+
+        <div className="field">
+          <label>Instagram</label>
+          <input name="link_instagram" defaultValue={settings?.link_instagram ?? ""} placeholder="https://instagram.com/yourhandle" />
+        </div>
+
+        <div className="field">
+          <label>Facebook</label>
+          <input name="link_facebook" defaultValue={settings?.link_facebook ?? ""} placeholder="https://facebook.com/yourpage" />
+        </div>
+
         <button className="btn">Save settings</button>
       </form>
     </div>
