@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PayoutActions } from "./PayoutActions";
+import { ExportCsvButton } from "@/components/ExportCsvButton";
 
 const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
 
@@ -45,6 +46,8 @@ export default async function PayoutsPage() {
         <div className="stat-card"><div className="num">₹{requestedTotal.toLocaleString("en-IN")}</div><div className="label">To pay by UPI</div></div>
         <div className="stat-card"><div className="num">{upcoming.length}</div><div className="label">Not yet unlocked</div></div>
       </div>
+
+      <ExportCsvButton basePath="/admin/export/commission" />
 
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>Requested — pay now</div>
