@@ -20,23 +20,23 @@ export default async function SalesDashboardPage() {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
     const label = d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
-    const value = (approvedPayments ?? [])
-      .filter((p) => new Date(p.created_at).toDateString() === d.toDateString())
-      .reduce((s, p) => s + Number(p.amount), 0);
-    return { label, value };
+    const dayPayments = (approvedPayments ?? []).filter(
+      (p) => new Date(p.created_at).toDateString() === d.toDateString()
+    );
+    const value = dayPayments.reduce((s, p) => s + Number(p.amount), 0);
+    return { label, value, users: dayPayments.length };
   });
 
   const monthly = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - i));
     const label = d.toLocaleDateString("en-IN", { month: "short" });
-    const value = (approvedPayments ?? [])
-      .filter((p) => {
-        const pd = new Date(p.created_at);
-        return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear();
-      })
-      .reduce((s, p) => s + Number(p.amount), 0);
-    return { label, value };
+    const monthPayments = (approvedPayments ?? []).filter((p) => {
+      const pd = new Date(p.created_at);
+      return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear();
+    });
+    const value = monthPayments.reduce((s, p) => s + Number(p.amount), 0);
+    return { label, value, users: monthPayments.length };
   });
 
   const in7Days = new Date();
