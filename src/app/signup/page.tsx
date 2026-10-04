@@ -47,6 +47,7 @@ function SignupPageInner() {
     profession: "Private job",
   });
   const [markets, setMarkets] = useState<string[]>([]);
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +70,10 @@ function SignupPageInner() {
     e.preventDefault();
     setError("");
 
+    if (!agreed) {
+      setError("You must agree to the Terms & Conditions and Privacy Policy to create an account.");
+      return;
+    }
     if (form.password.length < 6 || form.password.length > 12) {
       setError("Password must be 6–12 characters.");
       return;
@@ -238,8 +243,26 @@ function SignupPageInner() {
           </select>
         </div>
 
+        <div className="field">
+          <label style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13.5, fontWeight: 400 }}>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              style={{ width: "auto", marginTop: 3 }}
+            />
+            <span>
+              I agree to the{" "}
+              <a href="/terms" target="_blank" style={{ textDecoration: "underline" }}>Terms &amp; Conditions</a>
+              {" "}and{" "}
+              <a href="/privacy" target="_blank" style={{ textDecoration: "underline" }}>Privacy Policy</a>, and I
+              understand Jackpot Bot is a technical analysis tool, not SEBI-registered investment advice.
+            </span>
+          </label>
+        </div>
+
         {error && <p className="error" style={{ marginBottom: 12 }}>{error}</p>}
-        <button className="btn" style={{ width: "100%" }} disabled={loading}>
+        <button className="btn" style={{ width: "100%" }} disabled={loading || !agreed}>
           {loading ? "Creating account…" : "Create account"}
         </button>
       </form>

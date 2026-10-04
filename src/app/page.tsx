@@ -162,6 +162,12 @@ export default async function Home() {
           </div>
         </div>
       )}
+
+      <p className="muted" style={{ marginTop: 30, fontSize: 12, textAlign: "center" }}>
+        <a href="/terms" style={{ color: "inherit" }}>Terms &amp; Conditions</a>
+        {" · "}
+        <a href="/privacy" style={{ color: "inherit" }}>Privacy Policy</a>
+      </p>
     </div>
   );
 }
