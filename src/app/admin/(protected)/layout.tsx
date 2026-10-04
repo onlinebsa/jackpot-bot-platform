@@ -26,9 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="admin-side">
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700 }}>
-              Jackpot Bot Admin
-            </div>
+            <img src="/logo.png" alt="Jackpot Bot" style={{ height: 36, width: "auto" }} />
             <NotificationBell />
           </div>
           <nav className="admin-nav">
