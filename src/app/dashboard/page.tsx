@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ReferralCard } from "@/components/ReferralCard";
 
@@ -19,6 +20,19 @@ export default async function DashboardPage() {
   const status = profile?.status ?? "no_plan";
 
   const { data: referrals } = await supabase.rpc("get_my_referrals");
+
+  const adminSupabase = createAdminClient();
+  const { data: quickLinks } = await adminSupabase
+    .from("admin_settings")
+    .select("link_support, link_demo_training, link_tv_setup")
+    .eq("id", 1)
+    .single();
+
+  const actionButtons = [
+    { label: "Support (Telegram)", url: quickLinks?.link_support },
+    { label: "Demo Training", url: quickLinks?.link_demo_training },
+    { label: "TV Setup & Setting", url: quickLinks?.link_tv_setup },
+  ].filter((b) => b.url);
 
   return (
     <div className="wrap">
@@ -46,6 +60,28 @@ export default async function DashboardPage() {
           </Link>
         )}
       </div>
+
+      {actionButtons.length > 0 && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>
+            Quick actions
+          </div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {actionButtons.map((b) => (
+              <a
+                key={b.label}
+                href={b.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+                style={{ display: "inline-block" }}
+              >
+                {b.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>Payment history</div>
