@@ -83,3 +83,29 @@ export async function sendCommissionEarnedEmail(opts: {
     console.error("Failed to send commission earned email:", err);
   }
 }
+
+export async function sendCommissionPaidEmail(opts: {
+  to: string;
+  referrerName: string;
+  amount: number;
+  utr: string;
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: opts.to,
+      subject: `Your ₹${opts.amount.toLocaleString("en-IN")} commission has been paid!`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+          <h2 style="color: #F5A623;">Commission Paid 💰</h2>
+          <p>Hi ${opts.referrerName},</p>
+          <p>Your referral commission of <strong>₹${opts.amount.toLocaleString("en-IN")}</strong> has been paid to your UPI ID.</p>
+          <p style="color: #666; font-size: 13px;">Transaction Ref (UTR): ${opts.utr}</p>
+          <p style="margin-top: 24px;">Questions? Message us on Telegram: <a href="https://t.me/jackpotbot26">@jackpotbot26</a></p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Failed to send commission paid email:", err);
+  }
+}
