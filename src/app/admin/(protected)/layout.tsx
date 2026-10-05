@@ -26,7 +26,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="admin-side">
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <img src="/logo.png" alt="Jackpot Bot" style={{ height: 36, width: "auto" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <img src="/logo.png" alt="Jackpot Bot" style={{ height: 36, width: "auto" }} />
+              <span style={{ fontWeight: 700, fontSize: 16 }}>Admin Portal</span>
+            </div>
             <NotificationBell />
           </div>
           <nav className="admin-nav">
