@@ -36,7 +36,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>
-        <CustomerActions userId={c.id} whatsapp={c.whatsapp_number} />
+        <CustomerActions userId={c.id} whatsapp={c.whatsapp_number} tvAccessGiven={c.tv_access_given ?? false} />
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>

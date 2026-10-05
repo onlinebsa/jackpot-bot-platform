@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSession } from "@/lib/adminAuth";
+import { revalidatePath } from "next/cache";
 
 function generatePassword() {
   const chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#";
@@ -18,4 +19,15 @@ export async function resetCustomerPassword(userId: string): Promise<string> {
   const { error } = await admin.auth.admin.updateUserById(userId, { password: newPassword });
   if (error) throw new Error(error.message);
   return newPassword;
+}
+
+export async function toggleTvAccess(userId: string, given: boolean): Promise<void> {
+  await requireAdminSession();
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("profiles")
+    .update({ tv_access_given: given })
+    .eq("id", userId);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/admin/customers/${userId}`);
 }
