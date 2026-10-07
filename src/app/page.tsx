@@ -80,51 +80,93 @@ export default async function Home() {
         </div>
       </div>
 
-      <h2 style={{ fontSize: 28, marginBottom: 6 }}>Get access to Jackpot Bot</h2>
-      <p className="muted" style={{ marginBottom: 30 }}>
-        TradingView indicator + setup, premium Telegram group and free training.
-      </p>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: "var(--amber)", fontWeight: 700, marginBottom: 10 }}>
+          Jackpot Bot &amp; Algo
+        </div>
+        <h1 style={{ fontSize: 34, margin: "0 0 12px" }}>Simple, Transparent Pricing</h1>
+        <p className="muted" style={{ fontSize: 15, maxWidth: 480, margin: "0 auto 22px", lineHeight: 1.5 }}>
+          Choose the plan that fits your trading style — and scale up as a professional trader.
+        </p>
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <span className="card" style={{ padding: "7px 14px", fontSize: 12.5, borderRadius: 20 }}>📈 All markets &amp; all time frames tested</span>
+          <span className="card" style={{ padding: "7px 14px", fontSize: 12.5, borderRadius: 20 }}>⚡ Quick Execution</span>
+          <span className="card" style={{ padding: "7px 14px", fontSize: 12.5, borderRadius: 20 }}>🇮🇳 Fast Servers</span>
+          <span className="card" style={{ padding: "7px 14px", fontSize: 12.5, borderRadius: 20 }}>🛑 Kill-Switch Option</span>
+        </div>
+      </div>
 
       <div className="grid-2">
-        <div className="card">
-          <div className="muted" style={{ textTransform: "uppercase", fontSize: 12 }}>Limited-time offer</div>
-          <h3 style={{ fontSize: 20, margin: "8px 0" }}>Starter Monthly Plan</h3>
+        <div className="card" style={{ borderColor: "#2DD4BF", boxShadow: "0 0 30px -10px rgba(45,212,191,0.3)" }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
+            <span style={{ color: "#2DD4BF", textTransform: "uppercase", fontSize: 11, fontWeight: 700, background: "#0F3F3A", padding: "3px 9px", borderRadius: 4 }}>
+              Limited-Time Offer
+            </span>
+            <span style={{ background: "#2DD4BF", color: "#06231F", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 4 }}>
+              67% OFF
+            </span>
+          </div>
+          <h3 style={{ fontSize: 20, margin: "8px 0 2px" }}>JB Starter</h3>
+          <div className="muted" style={{ fontSize: 13, marginBottom: 10 }}>Duration: 1 Month</div>
           <div style={{ marginBottom: 4 }}>
             <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: 8 }}>₹15,000</span>
             <span style={{ fontSize: 26, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif" }}>₹5,000</span>
             <span className="muted"> /month</span>
           </div>
-          <ul className="muted" style={{ paddingLeft: 18, marginBottom: 20, lineHeight: 1.8 }}>
-            <li>1-month Jackpot Bot access</li>
+          <p className="muted" style={{ fontSize: 12, marginBottom: 16 }}>
+            Limited-time price — reverts to MRP ₹15,000 after the offer ends.
+          </p>
+          <ul className="muted" style={{ paddingLeft: 18, marginBottom: 16, lineHeight: 1.8 }}>
+            <li>1-month Jackpot Bot Indicator access</li>
             <li>Setup &amp; deploy on TradingView</li>
-            <li>Support for any issue</li>
-            <li>Premium Telegram group</li>
+            <li>Support for any issue (9:30 am – 5 pm)</li>
+            <li>Raise support tickets directly from your dashboard</li>
+            <li>Premium VIP Group — 1 month access</li>
             <li>Free training / demo class</li>
+            <li><strong style={{ color: "var(--text)" }}>Bonus:</strong> Telegram Trading Bot — automatically places trades from your signals (T&amp;C apply)</li>
           </ul>
-          <Link href="/signup?plan=monthly" className="btn" style={{ display: "block", textAlign: "center" }}>
-            Choose Starter Monthly Plan
+          <Link href="/signup?plan=monthly" className="btn" style={{ display: "block", textAlign: "center", background: "#2DD4BF", color: "#06231F" }}>
+            Choose JB Starter
           </Link>
         </div>
 
-        <div className="card" style={{ borderColor: "var(--amber)" }}>
-          <div style={{ color: "var(--amber)", textTransform: "uppercase", fontSize: 12 }}>Best value</div>
-          <h3 style={{ fontSize: 20, margin: "8px 0" }}>2 Year Pro Plan</h3>
+        <div className="card" style={{ borderColor: "var(--amber)", boxShadow: "0 0 30px -10px rgba(245,166,35,0.35)" }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
+            <span style={{ color: "var(--amber)", textTransform: "uppercase", fontSize: 11, fontWeight: 700, background: "#3A2E10", padding: "3px 9px", borderRadius: 4 }}>
+              Best Value
+            </span>
+            <span style={{ background: "var(--amber)", color: "#1A1200", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 4 }}>
+              70% OFF
+            </span>
+          </div>
+          <h3 style={{ fontSize: 20, margin: "8px 0 2px" }}>JB Elite Pro</h3>
+          <div className="muted" style={{ fontSize: 13, marginBottom: 10 }}>Duration: 2 Years</div>
           <div style={{ marginBottom: 4 }}>
-            <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: 8 }}>₹1,50,000</span>
+            <span style={{ textDecoration: "line-through", color: "var(--muted)", marginRight: 8 }}>₹2,00,000</span>
             <span style={{ fontSize: 26, fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif" }}>₹60,000</span>
           </div>
-          <ul className="muted" style={{ paddingLeft: 18, marginBottom: 20, lineHeight: 1.8 }}>
-            <li><strong style={{ color: "var(--text)" }}>2 years</strong> of Jackpot Bot access</li>
+          <p className="muted" style={{ fontSize: 12, marginBottom: 16 }}>
+            Limited-time price — reverts to MRP ₹2,00,000 after the offer ends.
+          </p>
+          <ul className="muted" style={{ paddingLeft: 18, marginBottom: 16, lineHeight: 1.8 }}>
+            <li><strong style={{ color: "var(--text)" }}>2 years</strong> of Jackpot Bot access + Sideways Market Signals Indicator free (2 Yrs.)</li>
             <li>Setup &amp; deploy on TradingView</li>
-            <li><strong style={{ color: "var(--text)" }}>Unlimited</strong> support</li>
-            <li>Premium Telegram group</li>
+            <li><strong style={{ color: "var(--text)" }}>Unlimited</strong> support (first priority, 9:30 am – 9 pm)</li>
+            <li>Raise support tickets directly from your dashboard</li>
+            <li>Premium VIP Group — <strong style={{ color: "var(--text)" }}>Lifetime</strong> access</li>
             <li>Free training / demo class</li>
+            <li>Algo Trading Software — 3 Months Free (T&amp;C)</li>
+            <li>Direct trade execution to your broker — automatic Entry &amp; Stop-Loss</li>
           </ul>
           <Link href="/signup?plan=onetime" className="btn" style={{ display: "block", textAlign: "center" }}>
-            Choose 2 Year Pro Plan
+            Choose JB Elite Pro
           </Link>
         </div>
       </div>
+
+      <p className="muted" style={{ fontSize: 12, marginTop: 14, textAlign: "center" }}>
+        Note: Source code will not be provided. Plans include usage access to the Jackpot Bot indicator and software only.
+      </p>
 
       <FeedbackGrid items={items} />
 

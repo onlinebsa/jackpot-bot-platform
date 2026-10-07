@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { INVOICE_DETAILS, computeGstBreakdown } from "@/lib/invoiceDetails";
 import { PrintButton } from "./PrintButton";
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "JB Starter", onetime: "JB Elite Pro" };
 
 function computeValidity(plan: string, approvedAt: string) {
   const start = new Date(approvedAt);
