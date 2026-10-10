@@ -61,8 +61,8 @@ export default async function SalesDashboardPage() {
 
       <div className="stat-grid">
         <div className="stat-card"><div className="num">{totalActive ?? 0}</div><div className="label">Total subscribers</div></div>
-        <div className="stat-card"><div className="num">{onetimeCount ?? 0}</div><div className="label">2 Year Pro Plan subscribers</div></div>
-        <div className="stat-card"><div className="num">{monthlyCount ?? 0}</div><div className="label">Starter Monthly Plan subscribers</div></div>
+        <div className="stat-card"><div className="num">{onetimeCount ?? 0}</div><div className="label">JB Elite Pro subscribers</div></div>
+        <div className="stat-card"><div className="num">{monthlyCount ?? 0}</div><div className="label">JB Starter subscribers</div></div>
         <div className="stat-card"><div className="num">₹{totalRevenue.toLocaleString("en-IN")}</div><div className="label">Total revenue</div></div>
       </div>
 

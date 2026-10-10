@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { toCsv, csvResponse } from "@/lib/csv";
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "JB Starter", onetime: "JB Elite Pro" };
 
 export async function GET(req: NextRequest) {
   try {

@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { sendExpiryReminderEmail } from "@/lib/email";
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "JB Starter", onetime: "JB Elite Pro" };
 
 export async function logReminderSent(userId: string) {
   await requireAdminSession();

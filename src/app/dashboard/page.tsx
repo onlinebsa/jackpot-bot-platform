@@ -47,7 +47,7 @@ export default async function DashboardPage() {
         <div className="muted" style={{ fontSize: 12, textTransform: "uppercase", marginBottom: 6 }}>Your plan</div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
           <span className={`badge badge-${status}`}>{status.replace("_", " ")}</span>
-          {profile?.plan && <span className="muted">{profile.plan === "monthly" ? "Starter Monthly Plan" : "2 Year Pro Plan"}</span>}
+          {profile?.plan && <span className="muted">{profile.plan === "monthly" ? "JB Starter" : "JB Elite Pro"}</span>}
         </div>
         {profile?.plan_expiry && (
           <div className="muted" style={{ fontSize: 13 }}>

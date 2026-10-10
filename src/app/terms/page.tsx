@@ -34,7 +34,7 @@ export default function TermsPage() {
 
         <h3 style={{ fontSize: 16 }}>4. Plans and payment</h3>
         <p>
-          We offer a Starter Monthly Plan and a 2 Year Pro Plan, at the prices displayed on our site at the
+          We offer the JB Starter plan and the JB Elite Pro plan, at the prices displayed on our site at the
           time of purchase. Payments can be made via Razorpay or manual UPI transfer (verified by our team
           before activation). A valid TradingView username is required at the time of payment so we can grant
           indicator access — access is granted manually by our team after payment verification, and may take

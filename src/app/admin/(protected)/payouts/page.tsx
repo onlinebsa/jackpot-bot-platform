@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { PayoutActions } from "./PayoutActions";
 import { ExportCsvButton } from "@/components/ExportCsvButton";
 
-const PLAN_LABEL: Record<string, string> = { monthly: "Starter Monthly Plan", onetime: "2 Year Pro Plan" };
+const PLAN_LABEL: Record<string, string> = { monthly: "JB Starter", onetime: "JB Elite Pro" };
 
 export default async function PayoutsPage() {
   const supabase = createAdminClient();

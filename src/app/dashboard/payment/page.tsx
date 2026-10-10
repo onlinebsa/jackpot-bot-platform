@@ -1,14 +1,38 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const PRICES: Record<string, number> = { monthly: 5000, onetime: 60000 };
-const RAZORPAY_LINKS: Record<string, string> = {
-  monthly: process.env.NEXT_PUBLIC_RAZORPAY_MONTHLY_LINK || "",
-  onetime: process.env.NEXT_PUBLIC_RAZORPAY_ONETIME_LINK || "",
+
+// Razorpay embedded payment button IDs (monthly = JB Starter, onetime = JB Elite Pro)
+const RAZORPAY_BUTTON_IDS: Record<string, string> = {
+  monthly: "pl_TkhhsSNex3JjPy",
+  onetime: "pl_Tkhpq6lz6pbogj",
 };
+
+// Renders Razorpay's official payment button script inside a form.
+// Re-mounts whenever the button ID changes (i.e. when the plan is switched).
+function RazorpayButton({ buttonId }: { buttonId: string }) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    form.innerHTML = "";
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/payment-button.js";
+    script.async = true;
+    script.setAttribute("data-payment_button_id", buttonId);
+    form.appendChild(script);
+    return () => {
+      form.innerHTML = "";
+    };
+  }, [buttonId]);
+
+  return <form ref={formRef} />;
+}
 
 export default function PaymentPage() {
   return (
@@ -67,9 +91,12 @@ function PaymentPageInner() {
     return true;
   }
 
-  async function handleRazorpayClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  // Capture-phase handler on the wrapper around the Razorpay button:
+  // blocks the click if the TradingView username is missing, otherwise saves it to the profile.
+  async function handleRazorpayClickCapture(e: React.MouseEvent<HTMLDivElement>) {
     if (!validateTvUsername() || !userId) {
       e.preventDefault();
+      e.stopPropagation();
       return;
     }
     await supabase.from("profiles").update({ tradingview_username: tvUsername.trim() }).eq("id", userId);
@@ -158,8 +185,8 @@ function PaymentPageInner() {
         <div className="field">
           <label>Plan</label>
           <select value={plan} onChange={(e) => setPlan(e.target.value)}>
-            <option value="monthly">Starter Monthly Plan — ₹5,000</option>
-            <option value="onetime">2 Year Pro Plan — ₹60,000</option>
+            <option value="monthly">JB Starter — ₹5,000</option>
+            <option value="onetime">JB Elite Pro — ₹60,000</option>
           </select>
         </div>
         <div className="field">
@@ -203,20 +230,14 @@ function PaymentPageInner() {
       <div className="card" style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 15, marginBottom: 8 }}>Option A — Pay via Razorpay</h3>
         <p className="muted" style={{ marginBottom: 12 }}>
-          Pay through our secure Razorpay link, then come back and submit your UTR below so we can match it.
+          Pay through our secure Razorpay button, then come back and submit your UTR below so we can match it.
         </p>
-        {RAZORPAY_LINKS[plan] ? (
-          <a
-            href={RAZORPAY_LINKS[plan]}
-            target="_blank"
-            onClick={handleRazorpayClick}
-            className="btn"
-            style={{ display: "inline-block" }}
-          >
-            Pay ₹{finalPrice.toLocaleString("en-IN")} on Razorpay
-          </a>
+        {RAZORPAY_BUTTON_IDS[plan] ? (
+          <div onClickCapture={handleRazorpayClickCapture}>
+            <RazorpayButton buttonId={RAZORPAY_BUTTON_IDS[plan]} />
+          </div>
         ) : (
-          <p className="muted">Payment link coming soon — use the manual option below.</p>
+          <p className="muted">Payment button coming soon — use the manual option below.</p>
         )}
       </div>
 
