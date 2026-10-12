@@ -170,9 +170,6 @@ export default async function Home() {
 
       <FeedbackGrid items={items} />
 
-      <p className="muted" style={{ marginTop: 40, fontSize: 13 }}>
-        Questions? Message us on Telegram <a href="https://t.me/jackpotbot26" target="_blank">@jackpotbot26</a>
-      </p>
 
       {socialLinks.length > 0 && (
         <div style={{ marginTop: 24, textAlign: "center" }}>
@@ -208,7 +205,7 @@ export default async function Home() {
       <p className="muted" style={{ marginTop: 30, fontSize: 12, textAlign: "center" }}>
         <a href="/terms" style={{ color: "inherit" }}>Terms &amp; Conditions</a>
         {" · "}
-        <a href="/privacy" style={{ color: "inherit" }}>Privacy Policy</a>
+        <a href="/privacy" style={{ color: "inherit" }}>Privacy Policy</a>{" · "}<a href="/refund" style={{ color: "inherit" }}>Refund Policy</a>
       </p>
     </div>
   );

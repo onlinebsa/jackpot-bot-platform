@@ -116,3 +116,17 @@ export async function markTvAccessGranted(paymentId: string) {
   if (error) throw new Error(error.message);
   revalidatePath("/admin/payments");
 }
+
+// Admin controls whether the customer can see their invoice (default: hidden).
+export async function setInvoiceVisible(paymentId: string, visible: boolean) {
+  await requireAdminSession();
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("payments")
+    .update({ invoice_visible: visible })
+    .eq("id", paymentId)
+    .eq("status", "approved");
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/payments");
+  revalidatePath("/dashboard");
+}

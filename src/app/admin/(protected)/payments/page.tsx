@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PaymentRowActions } from "./PaymentRowActions";
+import { InvoiceToggle } from "./InvoiceToggle";
 import { ExportCsvButton } from "@/components/ExportCsvButton";
 
 export default async function AdminPaymentsPage() {
@@ -22,7 +23,7 @@ export default async function AdminPaymentsPage() {
         <table>
           <thead>
             <tr>
-              <th>Customer</th><th>Plan</th><th>Amount</th><th>Promo</th><th>UTR</th><th>Status</th><th></th>
+              <th>Customer</th><th>Plan</th><th>Amount</th><th>Promo</th><th>UTR</th><th>Status</th><th>Invoice</th><th></th>
             </tr>
           </thead>
           <tbody>
@@ -35,6 +36,13 @@ export default async function AdminPaymentsPage() {
                 <td className="muted">{p.utr ?? "—"}</td>
                 <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                 <td>
+                  {p.status === "approved" && p.invoice_number ? (
+                    <InvoiceToggle paymentId={p.id} visible={!!p.invoice_visible} />
+                  ) : (
+                    <span className="muted">—</span>
+                  )}
+                </td>
+                <td>
                   <PaymentRowActions
                     paymentId={p.id}
                     screenshotPath={p.screenshot_url}
@@ -45,7 +53,7 @@ export default async function AdminPaymentsPage() {
                 </td>
               </tr>
             ))}
-            {!payments?.length && <tr><td colSpan={7} className="muted">No payments yet.</td></tr>}
+            {!payments?.length && <tr><td colSpan={8} className="muted">No payments yet.</td></tr>}
           </tbody>
         </table>
       </div>

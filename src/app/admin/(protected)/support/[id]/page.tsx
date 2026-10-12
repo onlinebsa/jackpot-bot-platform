@@ -30,7 +30,7 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
           {replies.map((r) => (
             <div key={r.id} className="card" style={{ background: r.sender === "admin" ? "var(--surface)" : "var(--bg)" }}>
               <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
-                {r.sender === "admin" ? "You" : "Customer"} · {new Date(r.created_at).toLocaleString()}
+                {r.sender === "admin" ? "You" : "Customer"} · {new Date(r.created_at).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" })}
               </div>
               <p>{r.message}</p>
             </div>

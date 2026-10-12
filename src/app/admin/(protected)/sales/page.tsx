@@ -84,7 +84,7 @@ export default async function SalesDashboardPage() {
               {expiring.map((e) => (
                 <tr key={e.id}>
                   <td>{e.full_name}</td>
-                  <td className="muted">{new Date(e.plan_expiry).toLocaleDateString()}</td>
+                  <td className="muted">{new Date(e.plan_expiry).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                   <td>
                     <ReminderButton
                       userId={e.id}

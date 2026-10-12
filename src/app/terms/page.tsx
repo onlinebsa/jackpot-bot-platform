@@ -7,14 +7,14 @@ export default function TermsPage() {
       <div className="card" style={{ lineHeight: 1.7, fontSize: 14.5 }}>
         <h3 style={{ fontSize: 16, marginTop: 0 }}>1. About us</h3>
         <p>
-          Jackpot Bot is operated by <strong>Zenova Traders</strong> ("we", "us", "our"), registered at
-          Shahbazpur Salem, PO. Bhikhanpur, Muzaffarpur, Bihar 842002, India (GSTIN: 10AKJPA1097N1ZL).
-          By creating an account or using our website, you agree to these Terms &amp; Conditions.
+          Jackpot Bot is operated by <strong>Zenova Traders</strong> ("we", "us", "our"), based in
+          Muzaffarpur, Bihar, India. By creating an account or using our website, you agree to these
+          Terms &amp; Conditions.
         </p>
 
         <h3 style={{ fontSize: 16 }}>2. Nature of service</h3>
         <p>
-          Jackpot Bot Pro is a software/technical indicator tool for TradingView, provided strictly for
+          Jackpot Bot is a software/technical indicator tool for TradingView, provided strictly for
           educational and technical analysis purposes. <strong>Zenova Traders is not a SEBI-registered
           investment adviser or research analyst.</strong> In accordance with SEBI (Securities and Exchange
           Board of India) guidelines, this service does not provide personalized investment advice, buy/sell
@@ -43,10 +43,9 @@ export default function TermsPage() {
 
         <h3 style={{ fontSize: 16 }}>5. Refund policy</h3>
         <p>
-          <strong>Digital subscriptions are non-refundable and non-transferable once TradingView access has
-          been activated.</strong> If a payment is rejected during verification (for example, an invalid or
-          unmatched transaction), no plan is activated and you may resubmit valid payment proof. If you
-          believe you were charged in error, contact us within 48 hours of payment at the email below.
+          <strong>All payments are final. Digital subscriptions are non-refundable and non-transferable.</strong>{" "}
+          If a payment cannot be verified, no plan is activated and you may resubmit valid payment proof.
+          Please read our full <a href="/refund">Refund &amp; Cancellation Policy</a> before making a payment.
         </p>
 
         <h3 style={{ fontSize: 16 }}>6. Referral &amp; commission program</h3>
@@ -85,8 +84,7 @@ export default function TermsPage() {
         <h3 style={{ fontSize: 16 }}>11. Contact</h3>
         <p>
           Questions about these Terms? Email us at{" "}
-          <a href="mailto:info.zenova11@gmail.com">info.zenova11@gmail.com</a> or message us on Telegram{" "}
-          <a href="https://t.me/jackpotbot26" target="_blank">@jackpotbot26</a>.
+          <a href="mailto:info.zenova11@gmail.com">info.zenova11@gmail.com</a>.
         </p>
       </div>
     </div>

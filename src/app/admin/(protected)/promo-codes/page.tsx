@@ -41,7 +41,7 @@ export default async function PromoCodesPage() {
                     {c.expires_at ? new Date(c.expires_at).toLocaleDateString("en-IN") : <span className="muted">Never</span>}
                     {expired && <span className="badge badge-rejected" style={{ marginLeft: 8 }}>expired</span>}
                   </td>
-                  <td className="muted">{new Date(c.created_at).toLocaleDateString()}</td>
+                  <td className="muted">{new Date(c.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                 </tr>
               );
             })}

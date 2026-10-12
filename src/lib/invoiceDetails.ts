@@ -6,12 +6,12 @@ export const INVOICE_DETAILS = {
   businessEmail: "info.zenova11@gmail.com",
   businessStateName: "Bihar",
   businessStateCode: "10",
-  productName: "Jackpot Bot Pro - Trading Indicator",
+  productName: "Jackpot Bot",
   sacCode: "998315",
   taxRatePercent: 18, // GST is already included in the displayed plan price
   invoicePrefix: "ZT",
   terms: [
-    "Nature of Service: Jackpot Bot Pro is a software/technical indicator tool provided strictly for educational and technical analysis purposes. Zenova Traders is not a SEBI-registered advisor.",
+    "Nature of Service: Jackpot Bot is a software/technical indicator tool provided strictly for educational and technical analysis purposes. Zenova Traders is not a SEBI-registered advisor.",
     "Refund Policy: Digital software subscriptions are non-refundable and non-transferable once activated.",
     "This is a system-generated document and does not require a signature.",
   ],

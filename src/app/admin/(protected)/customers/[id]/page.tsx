@@ -24,7 +24,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
     ["Markets traded", (c.markets_traded ?? []).join(", ")],
     ["Profession", c.profession],
     ["Failed login attempts", String(c.failed_login_count)],
-    ["Joined", new Date(c.created_at).toLocaleString()],
+    ["Joined", new Date(c.created_at).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" })],
   ];
 
   return (
@@ -58,7 +58,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             <tbody>
               {payments.map((p) => (
                 <tr key={p.id}>
-                  <td>{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td>{new Date(p.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                   <td>{p.plan}</td>
                   <td>₹{p.amount}</td>
                   <td className="muted">{p.utr ?? "—"}</td>

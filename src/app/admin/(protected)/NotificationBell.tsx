@@ -168,7 +168,7 @@ export function NotificationBell() {
                   <div style={{ fontSize: 13, fontWeight: 600 }}>{n.title}</div>
                   {n.message && <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 2 }}>{n.message}</div>}
                   <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 4 }}>
-                    {new Date(n.created_at).toLocaleString()}
+                    {new Date(n.created_at).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" })}
                   </div>
                 </div>
               </div>

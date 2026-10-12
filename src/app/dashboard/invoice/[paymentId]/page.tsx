@@ -14,8 +14,14 @@ function computeValidity(plan: string, approvedAt: string) {
   return { start, end };
 }
 
+// dd/mm/yyyy in Indian time, so the date never shifts by a day on the server.
 function formatDate(d: Date) {
-  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" });
+}
+
+// Characters that are not allowed in file names are replaced with "-".
+function safeFileName(s: string) {
+  return s.replace(/[\\/:*?"<>|]+/g, "-").replace(/\s+/g, " ").trim();
 }
 
 export default async function InvoicePage({ params }: { params: Promise<{ paymentId: string }> }) {
@@ -44,9 +50,20 @@ export default async function InvoicePage({ params }: { params: Promise<{ paymen
       </div>
     );
   }
+  if (!payment.invoice_visible) {
+    return (
+      <div className="wrap">
+        <p className="muted">
+          Your invoice is not available yet. It will appear here once our team releases it. Please check back later or contact support.
+        </p>
+        <Link href="/dashboard" className="btn-secondary" style={{ display: "inline-block", marginTop: 12 }}>Back to dashboard</Link>
+      </div>
+    );
+  }
 
   const gst = computeGstBreakdown(Number(payment.amount), INVOICE_DETAILS.taxRatePercent, profile?.address_state);
   const { start, end } = computeValidity(payment.plan, payment.approved_at);
+  const pdfName = safeFileName(`Invoice - ${profile?.full_name ?? "Customer"} - ${String(payment.invoice_number)}`);
 
   const addressLine = [
     profile?.address_village_town,
@@ -65,10 +82,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ paymen
         .invoice-page #invoice { background: #ffffff !important; border: 1px solid #dddddd !important; }
         .invoice-page table th, .invoice-page table td { border-color: #dddddd !important; }
         @media print {
+          @page { margin: 12mm; }
+          body * { visibility: hidden !important; }
+          #invoice, #invoice * { visibility: visible !important; }
           .invoice-page { background: #ffffff !important; }
+          .invoice-page #invoice { position: absolute; left: 0; top: 0; width: 100%; border: none !important; }
         }
       `}</style>
-      <PrintButton />
+      <PrintButton fileName={pdfName} />
       <div className="card" id="invoice">
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h2 style={{ fontSize: 18, margin: "6px 0" }}>TAX INVOICE</h2>

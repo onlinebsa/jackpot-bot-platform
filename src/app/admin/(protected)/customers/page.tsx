@@ -31,7 +31,7 @@ export default async function AdminCustomersPage() {
                 <td>{c.username}</td>
                 <td>{c.plan ?? "—"}</td>
                 <td><span className={`badge badge-${c.status}`}>{c.status.replace("_", " ")}</span></td>
-                <td className="muted">{new Date(c.created_at).toLocaleDateString()}</td>
+                <td className="muted">{new Date(c.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                 <td><Link href={`/admin/customers/${c.id}`} className="muted">View →</Link></td>
               </tr>
             ))}

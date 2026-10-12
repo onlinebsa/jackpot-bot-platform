@@ -51,7 +51,7 @@ export default async function DashboardPage() {
         </div>
         {profile?.plan_expiry && (
           <div className="muted" style={{ fontSize: 13 }}>
-            Expires: {new Date(profile.plan_expiry).toLocaleDateString()}
+            Expires: {new Date(profile.plan_expiry).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}
           </div>
         )}
         {status !== "active" && (
@@ -92,12 +92,12 @@ export default async function DashboardPage() {
             <tbody>
               {payments.map((p) => (
                 <tr key={p.id}>
-                  <td>{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td>{new Date(p.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                   <td>{p.plan}</td>
                   <td>₹{p.amount}</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                   <td>
-                    {p.status === "approved" && p.invoice_number && (
+                    {p.status === "approved" && p.invoice_number && p.invoice_visible && (
                       <Link href={`/dashboard/invoice/${p.id}`} className="muted">Invoice →</Link>
                     )}
                   </td>

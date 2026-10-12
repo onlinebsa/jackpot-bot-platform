@@ -107,7 +107,7 @@ export default function SupportPage() {
                   }}
                 >
                   <div className="muted" style={{ fontSize: 11, marginBottom: 4 }}>
-                    {r.sender === "admin" ? "Support team" : "You"} · {new Date(r.created_at).toLocaleString()}
+                    {r.sender === "admin" ? "Support team" : "You"} · {new Date(r.created_at).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" })}
                   </div>
                   <p style={{ margin: 0, fontSize: 13.5 }}>{r.message}</p>
                 </div>

@@ -20,7 +20,7 @@ export default async function AdminSupportPage() {
                 <td>{t.profiles?.full_name}</td>
                 <td>{t.subject}</td>
                 <td><span className={`badge badge-${t.status}`}>{t.status}</span></td>
-                <td className="muted">{new Date(t.created_at).toLocaleDateString()}</td>
+                <td className="muted">{new Date(t.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Asia/Kolkata" })}</td>
                 <td><Link href={`/admin/support/${t.id}`} className="muted">Open →</Link></td>
               </tr>
             ))}
